@@ -25,6 +25,26 @@ docker compose -f docker/docker-compose.yaml up --build --detach
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Code
+
+This project uses a PostgreSQL database to store the data and model the data.
+
+To connect I use:
+
+-   [Postgres.JS](https://github.com/porsager/postgres)
+-   [Drizzle](https://orm.drizzle.team/)
+
+### Linting and Formatting
+
+The usual suspects of:
+
+-   [Prettier](https://prettier.io/)
+-   [ESLint](https://eslint.org/)
+
+Linting and formatting is enforced with a pre-commit hook maintained by [Husky](https://typicode.github.io/husky/).
+
+There is also a GitHub action to double check this, maybe a stray `--no-verify` commit is done.
+
 ## NextJS
 
 ### Learn More
