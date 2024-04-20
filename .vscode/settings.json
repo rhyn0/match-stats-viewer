@@ -9,6 +9,13 @@
     "[typescriptreact]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
+    "[json]": {
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace",
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "prettier.configPath": "./.prettierrc.toml",
     "editor.formatOnSave": true,
     "editor.formatOnType": false,

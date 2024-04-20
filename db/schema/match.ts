@@ -3,6 +3,7 @@
 import { integer, pgTable, serial, varchar, date } from "drizzle-orm/pg-core";
 
 import { teams } from "./team";
+import { maps } from "./map";
 
 export const matches = pgTable("matches_played", {
     id: serial("id").primaryKey(),
@@ -18,4 +19,7 @@ export const matches = pgTable("matches_played", {
     roundCountA: integer("rounds_for_a").notNull(),
     roundCountB: integer("rounds_for_b").notNull(),
     playDate: date("match_date", { mode: "date" }).defaultNow().notNull(),
+    mapPlayedId: integer("map_id")
+        .references(() => maps.id)
+        .notNull(),
 });
