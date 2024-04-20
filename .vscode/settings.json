@@ -19,5 +19,25 @@
     "prettier.configPath": "./.prettierrc.toml",
     "editor.formatOnSave": true,
     "editor.formatOnType": false,
-    "inlineFold.regex": "(class|className)=[`'{\"]([^`'\"}]{30,})[`'\"}]"
+    "inlineFold.regex": "(class|className)=[`'{\"]([^`'\"}]{30,})[`'\"}]",
+    "files.exclude": {
+        "**/.git": false,
+        "**/.classpath": false,
+        "**/.project": false,
+        "**/.settings": false,
+        "**/.factorypath": false,
+        "**/.next": true,
+        "**/node_modules": true
+    },
+    "eslint.enable": true,
+    "eslint.codeAction.disableRuleComment": {
+        "enable": true,
+        "location": "separateLine",
+        "commentStyle": "line"
+    },
+    "eslint.lintTask.enable": true,
+    "eslint.format.enable": false,
+    "eslint.options": {
+        "overrideConfigFile": "./.eslintrc.json"
+    }
 }
