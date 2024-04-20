@@ -23,7 +23,10 @@ Then additionally use [Drizzle Kit](https://orm.drizzle.team/kit-docs) to initia
 docker compose -f docker/docker-compose.yaml up --build --detach
 # if using nvm
 # nvm use
-POSTGRES_URL="..." npm run push
+# setup the .env.local file
+cp .env.template .env.local
+# default of template is to use a localhost PostgreSQL database
+npm run push
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -53,7 +56,6 @@ There is also a GitHub action to double check this, maybe a stray `--no-verify` 
 While iterating I might, need to change the tables in my Postgres database. And instead of taking time to reload data, I can use [Drizzle Kit](https://orm.drizzle.team/kit-docs) to do the migration for me
 
 ```bash
-export POSTGRES_URL="..."
 npm run generate
 npm run push
 ```
@@ -71,4 +73,4 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## ToDos
 
--   [ ] Fix the generate Drizzle Kit commands to not require us setting ENV. This probably involves `dotenv` in `src/env.ts`
+-   [x] Fix the generate Drizzle Kit commands to not require us setting ENV. This probably involves `dotenv` in `src/env.ts`

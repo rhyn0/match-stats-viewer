@@ -1,0 +1,346 @@
+{
+    "id": "1879e373-e018-4851-b34b-68638243b2e2",
+    "prevId": "00000000-0000-0000-0000-000000000000",
+    "version": "5",
+    "dialect": "pg",
+    "tables": {
+        "agents": {
+            "name": "agents",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "serial",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "agent_name": {
+                    "name": "agent_name",
+                    "type": "varchar",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "agent_type": {
+                    "name": "agent_type",
+                    "type": "agent_types",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {
+                "agent_name_uniq_idx": {
+                    "name": "agent_name_uniq_idx",
+                    "columns": ["agent_name"],
+                    "isUnique": true
+                }
+            },
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "maps": {
+            "name": "maps",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "serial",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "map_name": {
+                    "name": "map_name",
+                    "type": "varchar",
+                    "primaryKey": false,
+                    "notNull": true
+                }
+            },
+            "indexes": {
+                "map_name_uniq_idx": {
+                    "name": "map_name_uniq_idx",
+                    "columns": ["map_name"],
+                    "isUnique": true
+                }
+            },
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "matches_played": {
+            "name": "matches_played",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "serial",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "team_a_name": {
+                    "name": "team_a_name",
+                    "type": "varchar(256)",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "team_a_id": {
+                    "name": "team_a_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "team_b_name": {
+                    "name": "team_b_name",
+                    "type": "varchar(256)",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "team_b_id": {
+                    "name": "team_b_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "raw_rounds": {
+                    "name": "raw_rounds",
+                    "type": "varchar(5)",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "rounds_for_a": {
+                    "name": "rounds_for_a",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "rounds_for_b": {
+                    "name": "rounds_for_b",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "match_date": {
+                    "name": "match_date",
+                    "type": "date",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                },
+                "map_id": {
+                    "name": "map_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "matches_played_team_a_id_participating_teams_id_fk": {
+                    "name": "matches_played_team_a_id_participating_teams_id_fk",
+                    "tableFrom": "matches_played",
+                    "tableTo": "participating_teams",
+                    "columnsFrom": ["team_a_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "matches_played_team_b_id_participating_teams_id_fk": {
+                    "name": "matches_played_team_b_id_participating_teams_id_fk",
+                    "tableFrom": "matches_played",
+                    "tableTo": "participating_teams",
+                    "columnsFrom": ["team_b_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "matches_played_map_id_maps_id_fk": {
+                    "name": "matches_played_map_id_maps_id_fk",
+                    "tableFrom": "matches_played",
+                    "tableTo": "maps",
+                    "columnsFrom": ["map_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "players": {
+            "name": "players",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "serial",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "team_id": {
+                    "name": "team_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "player_name": {
+                    "name": "player_name",
+                    "type": "varchar",
+                    "primaryKey": false,
+                    "notNull": true
+                }
+            },
+            "indexes": {
+                "player_name_uniq_idx": {
+                    "name": "player_name_uniq_idx",
+                    "columns": ["player_name"],
+                    "isUnique": true
+                }
+            },
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "player_matches": {
+            "name": "player_matches",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "serial",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "player_id": {
+                    "name": "player_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "match_id": {
+                    "name": "match_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "agent_id": {
+                    "name": "agent_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "match_place": {
+                    "name": "match_place",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "raw_kda": {
+                    "name": "raw_kda",
+                    "type": "varchar(10)",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "player_kills": {
+                    "name": "player_kills",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "player_deaths": {
+                    "name": "player_deaths",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "player_assists": {
+                    "name": "player_assists",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "player_matches_player_id_players_id_fk": {
+                    "name": "player_matches_player_id_players_id_fk",
+                    "tableFrom": "player_matches",
+                    "tableTo": "players",
+                    "columnsFrom": ["player_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "player_matches_match_id_matches_played_id_fk": {
+                    "name": "player_matches_match_id_matches_played_id_fk",
+                    "tableFrom": "player_matches",
+                    "tableTo": "matches_played",
+                    "columnsFrom": ["match_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "player_matches_agent_id_agents_id_fk": {
+                    "name": "player_matches_agent_id_agents_id_fk",
+                    "tableFrom": "player_matches",
+                    "tableTo": "agents",
+                    "columnsFrom": ["agent_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        },
+        "participating_teams": {
+            "name": "participating_teams",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "serial",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "default_name": {
+                    "name": "default_name",
+                    "type": "varchar",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "team_name": {
+                    "name": "team_name",
+                    "type": "varchar",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "modified_at": {
+                    "name": "modified_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {}
+        }
+    },
+    "enums": {
+        "agent_types": {
+            "name": "agent_types",
+            "values": {
+                "controller": "controller",
+                "sentinel": "sentinel",
+                "duelist": "duelist",
+                "initiator": "initiator"
+            }
+        }
+    },
+    "schemas": {},
+    "_meta": {
+        "columns": {},
+        "schemas": {},
+        "tables": {}
+    }
+}
