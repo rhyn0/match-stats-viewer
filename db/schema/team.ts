@@ -6,6 +6,7 @@ export const teams = pgTable("participating_teams", {
     id: serial("id").primaryKey(),
     defaultName: varchar("default_name").notNull(),
     teamName: varchar("team_name"),
+    // TODO: default of modifiedAt to be now?
     modifiedAt: timestamp("modified_at", {
         mode: "date",
         withTimezone: true,

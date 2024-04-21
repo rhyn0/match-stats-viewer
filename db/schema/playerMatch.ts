@@ -1,6 +1,7 @@
 /** This table defines a singular player in a match and any statistics we want to associate with this occurrence of gameplay. */
 
 import { integer, pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 import { matches } from "./match";
 import { agents } from "./agent";
@@ -17,3 +18,10 @@ export const playerMatches = pgTable("player_matches", {
     playerDeaths: integer("player_deaths").notNull(),
     playerAssists: integer("player_assists").notNull(),
 });
+
+export const playerWhoPlayedRel = relations(playerMatches, ({ one }) => ({
+    playerWhoPlayedRel: one(players, {
+        fields: [playerMatches.playerId],
+        references: [players.id],
+    }),
+}));
