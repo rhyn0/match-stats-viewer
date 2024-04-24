@@ -1,6 +1,8 @@
 /** Information regarding the teams, this will have id references to `players` */
 
+import { relations } from "drizzle-orm";
 import { pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { players } from "./player";
 
 export const teams = pgTable("participating_teams", {
     id: serial("id").primaryKey(),
@@ -12,3 +14,7 @@ export const teams = pgTable("participating_teams", {
         withTimezone: true,
     }).$onUpdateFn(() => new Date()),
 });
+
+export const teamPlayersRel = relations(teams, ({ many }) => ({
+    teamPlayersRel: many(players),
+}));

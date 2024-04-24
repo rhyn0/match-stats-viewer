@@ -1,192 +1,6 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/drizzlePg";
-
-const exampleData = {
-    rows: [
-        {
-            id: 1,
-            playerName: "John",
-            teamName: "1",
-            totalKills: 10,
-            totalDeaths: 10,
-            totalAssists: 10,
-            roundsPlayed: 24,
-            agentPlays: {
-                1: 1,
-            },
-            // this can either be calculated here or in SQL
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 1.01134,
-                min: 1.01134,
-                max: 1.01134,
-            },
-        },
-        {
-            id: 2,
-            playerName: "Jane",
-            teamName: "2",
-            totalKills: 8,
-            totalDeaths: 12,
-            totalAssists: 6,
-            roundsPlayed: 22,
-            agentPlays: {
-                1: 0,
-            },
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 0.66667,
-                min: 0.66667,
-                max: 0.66667,
-            },
-        },
-        {
-            id: 3,
-            playerName: "Mike",
-            teamName: "1",
-            totalKills: 12,
-            totalDeaths: 8,
-            totalAssists: 4,
-            roundsPlayed: 26,
-            agentPlays: {
-                1: 2,
-            },
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 1.5,
-                min: 1.5,
-                max: 1.5,
-            },
-        },
-        {
-            id: 4,
-            playerName: "Sarah",
-            teamName: "2",
-            totalKills: 6,
-            totalDeaths: 14,
-            totalAssists: 10,
-            roundsPlayed: 20,
-            agentPlays: {
-                1: 1,
-            },
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 0.42857,
-                min: 0.42857,
-                max: 0.42857,
-            },
-        },
-        {
-            id: 5,
-            playerName: "Alex",
-            teamName: "1",
-            totalKills: 14,
-            totalDeaths: 6,
-            totalAssists: 8,
-            roundsPlayed: 28,
-            agentPlays: {
-                1: 3,
-            },
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 2.33333,
-                min: 2.33333,
-                max: 2.33333,
-            },
-        },
-        {
-            id: 6,
-            playerName: "Emily",
-            teamName: "2",
-            totalKills: 10,
-            totalDeaths: 10,
-            totalAssists: 10,
-            roundsPlayed: 24,
-            agentPlays: {
-                1: 0,
-            },
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 1.0,
-                min: 1.0,
-                max: 1.0,
-            },
-        },
-        {
-            id: 7,
-            playerName: "David",
-            teamName: "1",
-            totalKills: 8,
-            totalDeaths: 12,
-            totalAssists: 6,
-            roundsPlayed: 22,
-            agentPlays: {
-                1: 1,
-            },
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 0.66667,
-                min: 0.66667,
-                max: 0.66667,
-            },
-        },
-        {
-            id: 8,
-            playerName: "Olivia",
-            teamName: "2",
-            totalKills: 12,
-            totalDeaths: 8,
-            totalAssists: 4,
-            roundsPlayed: 26,
-            agentPlays: {
-                1: 2,
-            },
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 1.5,
-                min: 1.5,
-                max: 1.5,
-            },
-        },
-        {
-            id: 9,
-            playerName: "Daniel",
-            teamName: "1",
-            totalKills: 6,
-            totalDeaths: 14,
-            totalAssists: 10,
-            roundsPlayed: 20,
-            agentPlays: {
-                1: 1,
-            },
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 0.42857,
-                min: 0.42857,
-                max: 0.42857,
-            },
-        },
-        {
-            id: 10,
-            playerName: "Sophia",
-            teamName: "2",
-            totalKills: 14,
-            totalDeaths: 6,
-            totalAssists: 8,
-            roundsPlayed: 28,
-            agentPlays: {
-                1: 3,
-            },
-            gamesPlayed: 1,
-            kdRatio: {
-                overall: 2.33333,
-                min: 2.33333,
-                max: 2.33333,
-            },
-        },
-    ],
-    length: 10,
-};
+import { calculateKd } from "@/lib/kdCalculation";
 
 export async function GET(): Promise<NextResponse> {
     const playerResult = await db.query.players.findMany({
@@ -207,12 +21,126 @@ export async function GET(): Promise<NextResponse> {
                     playerAssists: true,
                 },
                 // limit: 1  // limit the relation return if wanted
+                with: {
+                    matchRel: {
+                        columns: {
+                            roundCountA: true,
+                            roundCountB: true,
+                        },
+                    },
+                },
+            },
+            teamInfoRel: {
+                columns: {
+                    teamName: true,
+                    defaultName: true,
+                },
             },
         },
     });
 
-    console.table(playerResult);
-    console.log(playerResult[0].playerMatchesRel);
+    const finalStats = playerResult.map((playerStats) => ({
+        // @ts-expect-error - cant hint the sub relation
+        ...calculateStats(playerStats),
+        id: playerStats.id,
+        teamName:
+            // @ts-expect-error - fails to load the relationship
+            playerStats.teamInfoRel.teamName ??
+            // @ts-expect-error - fails to load the relationship
+            playerStats.teamInfoRel.defaultName,
+        playerName: playerStats.name,
+    }));
 
-    return new NextResponse(JSON.stringify(exampleData));
+    return new NextResponse(
+        JSON.stringify({ rows: finalStats, length: finalStats.length }),
+    );
+}
+
+interface PlayerMatchRecord {
+    id: number;
+    matchId: number | null;
+    playerAgentId: number | null;
+    matchPlace: number;
+    playerKills: number;
+    playerDeaths: number;
+    playerAssists: number;
+    matchRel: {
+        roundCountA: number;
+        roundCountB: number;
+    };
+}
+interface PlayerRow {
+    id: number;
+    name: string;
+    teamId: number | null;
+    playerMatchesRel: PlayerMatchRecord[];
+}
+interface CalculatedStats {
+    gamesPlayed: number;
+    kdRatio: {
+        overall: number;
+        min: number;
+        max: number;
+    };
+    roundsPlayed: number;
+    totalKills: number;
+    totalDeaths: number;
+    totalAssists: number;
+}
+function calculateStats(row: PlayerRow): CalculatedStats {
+    const defaultRecord = {
+        totalKills: 0,
+        totalDeaths: 0,
+        totalAssists: 0,
+        roundsPlayed: 0,
+        kdRatio: {
+            min: Number.POSITIVE_INFINITY,
+            max: Number.NEGATIVE_INFINITY,
+        },
+    };
+    const { totalKills, totalDeaths, totalAssists, kdRatio, roundsPlayed } =
+        row.playerMatchesRel.reduce(
+            (
+                {
+                    totalKills,
+                    totalDeaths,
+                    totalAssists,
+                    kdRatio,
+                    roundsPlayed,
+                },
+                matchRecord,
+            ) => {
+                const matchKdRatio = calculateKd({
+                    kills: matchRecord.playerKills,
+                    deaths: matchRecord.playerDeaths,
+                });
+                const kdMin = Math.min(kdRatio.min, matchKdRatio);
+                const kdMax = Math.max(kdRatio.max, matchKdRatio);
+                return {
+                    totalKills: totalKills + matchRecord.playerKills,
+                    totalDeaths: totalDeaths + matchRecord.playerDeaths,
+                    totalAssists: totalAssists + matchRecord.playerAssists,
+                    roundsPlayed:
+                        roundsPlayed +
+                        matchRecord.matchRel.roundCountA +
+                        matchRecord.matchRel.roundCountB,
+                    kdRatio: {
+                        min: kdMin,
+                        max: kdMax,
+                    },
+                };
+            },
+            defaultRecord,
+        );
+    return {
+        totalKills,
+        totalDeaths,
+        totalAssists,
+        roundsPlayed,
+        kdRatio: {
+            ...kdRatio,
+            overall: totalKills / totalDeaths,
+        },
+        gamesPlayed: row.playerMatchesRel.length,
+    };
 }

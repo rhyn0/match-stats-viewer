@@ -8,7 +8,7 @@ export interface OverallPlayerStatRecord {
     totalDeaths: number;
     totalAssists: number;
     roundsPlayed: number;
-    agentPlays: Record<number, number>;
+    // agentPlays: Record<number, number>;
     // to be calculated fields, maybe in SQL
     gamesPlayed: number;
     kdRatio: {
@@ -26,10 +26,10 @@ export const PlayerStatRecordZ = z.object({
     totalDeaths: z.number(),
     totalAssists: z.number(),
     roundsPlayed: z.number(),
-    agentPlays: z.record<z.ZodNumber, z.ZodNumber>(
-        z.coerce.number(),
-        z.number(),
-    ),
+    // agentPlays: z.record<z.ZodNumber, z.ZodNumber>(
+    //     z.coerce.number(),
+    //     z.number(),
+    // ),
     // to be calculated fields, maybe in SQL
     gamesPlayed: z.number(),
     kdRatio: z.object({

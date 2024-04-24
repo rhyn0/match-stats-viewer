@@ -9,6 +9,7 @@ import {
     varchar,
 } from "drizzle-orm/pg-core";
 import { playerMatches } from "./playerMatch";
+import { teams } from "./team";
 
 export const players = pgTable(
     "players",
@@ -27,4 +28,11 @@ export const players = pgTable(
 
 export const playersMatchRel = relations(players, ({ many }) => ({
     playerMatchesRel: many(playerMatches),
+}));
+
+export const teamInfoRel = relations(players, ({ one }) => ({
+    teamInfoRel: one(teams, {
+        fields: [players.teamId],
+        references: [teams.id],
+    }),
 }));

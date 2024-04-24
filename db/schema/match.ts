@@ -4,6 +4,8 @@ import { integer, pgTable, serial, varchar, date } from "drizzle-orm/pg-core";
 
 import { teams } from "./team";
 import { maps } from "./map";
+import { relations } from "drizzle-orm";
+import { playerMatches } from "./playerMatch";
 
 export const matches = pgTable("matches_played", {
     id: serial("id").primaryKey(),
@@ -23,3 +25,7 @@ export const matches = pgTable("matches_played", {
         .references(() => maps.id)
         .notNull(),
 });
+
+export const playerDetailsRel = relations(matches, ({ many }) => ({
+    playerDetailsRel: many(playerMatches),
+}));
