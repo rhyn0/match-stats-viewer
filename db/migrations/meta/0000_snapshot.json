@@ -1,30 +1,32 @@
 {
-    "id": "1879e373-e018-4851-b34b-68638243b2e2",
-    "prevId": "00000000-0000-0000-0000-000000000000",
     "version": "5",
-    "dialect": "pg",
+    "dialect": "sqlite",
+    "id": "f6903134-a0c7-4571-9e51-6054f09a8f8a",
+    "prevId": "00000000-0000-0000-0000-000000000000",
     "tables": {
         "agents": {
             "name": "agents",
-            "schema": "",
             "columns": {
                 "id": {
                     "name": "id",
-                    "type": "serial",
+                    "type": "integer",
                     "primaryKey": true,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": true
                 },
                 "agent_name": {
                     "name": "agent_name",
-                    "type": "varchar",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "agent_type": {
                     "name": "agent_type",
-                    "type": "agent_types",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 }
             },
             "indexes": {
@@ -40,19 +42,20 @@
         },
         "maps": {
             "name": "maps",
-            "schema": "",
             "columns": {
                 "id": {
                     "name": "id",
-                    "type": "serial",
+                    "type": "integer",
                     "primaryKey": true,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": true
                 },
                 "map_name": {
                     "name": "map_name",
-                    "type": "varchar",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 }
             },
             "indexes": {
@@ -68,68 +71,77 @@
         },
         "matches_played": {
             "name": "matches_played",
-            "schema": "",
             "columns": {
                 "id": {
                     "name": "id",
-                    "type": "serial",
+                    "type": "integer",
                     "primaryKey": true,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": true
                 },
                 "team_a_name": {
                     "name": "team_a_name",
-                    "type": "varchar(256)",
+                    "type": "text(256)",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "team_a_id": {
                     "name": "team_a_id",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "team_b_name": {
                     "name": "team_b_name",
-                    "type": "varchar(256)",
+                    "type": "text(256)",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "team_b_id": {
                     "name": "team_b_id",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "raw_rounds": {
                     "name": "raw_rounds",
-                    "type": "varchar(5)",
+                    "type": "text(5)",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "rounds_for_a": {
                     "name": "rounds_for_a",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "rounds_for_b": {
                     "name": "rounds_for_b",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "match_date": {
                     "name": "match_date",
-                    "type": "date",
+                    "type": "integer",
                     "primaryKey": false,
                     "notNull": true,
-                    "default": "now()"
+                    "autoincrement": false,
+                    "default": "CURRENT_TIMESTAMP"
                 },
                 "map_id": {
                     "name": "map_id",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 }
             },
             "indexes": {},
@@ -167,25 +179,27 @@
         },
         "players": {
             "name": "players",
-            "schema": "",
             "columns": {
                 "id": {
                     "name": "id",
-                    "type": "serial",
+                    "type": "integer",
                     "primaryKey": true,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": true
                 },
                 "team_id": {
                     "name": "team_id",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "player_name": {
                     "name": "player_name",
-                    "type": "varchar",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 }
             },
             "indexes": {
@@ -195,67 +209,85 @@
                     "isUnique": true
                 }
             },
-            "foreignKeys": {},
+            "foreignKeys": {
+                "players_team_id_participating_teams_id_fk": {
+                    "name": "players_team_id_participating_teams_id_fk",
+                    "tableFrom": "players",
+                    "tableTo": "participating_teams",
+                    "columnsFrom": ["team_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
             "compositePrimaryKeys": {},
             "uniqueConstraints": {}
         },
         "player_matches": {
             "name": "player_matches",
-            "schema": "",
             "columns": {
                 "id": {
                     "name": "id",
-                    "type": "serial",
+                    "type": "integer",
                     "primaryKey": true,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": true
                 },
                 "player_id": {
                     "name": "player_id",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "match_id": {
                     "name": "match_id",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "agent_id": {
                     "name": "agent_id",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "match_place": {
                     "name": "match_place",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "raw_kda": {
                     "name": "raw_kda",
-                    "type": "varchar(10)",
+                    "type": "text(10)",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "player_kills": {
                     "name": "player_kills",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "player_deaths": {
                     "name": "player_deaths",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "player_assists": {
                     "name": "player_assists",
                     "type": "integer",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 }
             },
             "indexes": {},
@@ -293,31 +325,35 @@
         },
         "participating_teams": {
             "name": "participating_teams",
-            "schema": "",
             "columns": {
                 "id": {
                     "name": "id",
-                    "type": "serial",
+                    "type": "integer",
                     "primaryKey": true,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": true
                 },
                 "default_name": {
                     "name": "default_name",
-                    "type": "varchar",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "team_name": {
                     "name": "team_name",
-                    "type": "varchar",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "modified_at": {
                     "name": "modified_at",
-                    "type": "timestamp with time zone",
+                    "type": "integer",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false,
+                    "default": "CURRENT_TIMESTAMP"
                 }
             },
             "indexes": {},
@@ -326,21 +362,10 @@
             "uniqueConstraints": {}
         }
     },
-    "enums": {
-        "agent_types": {
-            "name": "agent_types",
-            "values": {
-                "controller": "controller",
-                "sentinel": "sentinel",
-                "duelist": "duelist",
-                "initiator": "initiator"
-            }
-        }
-    },
-    "schemas": {},
+    "enums": {},
     "_meta": {
-        "columns": {},
         "schemas": {},
-        "tables": {}
+        "tables": {},
+        "columns": {}
     }
 }

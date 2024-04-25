@@ -258,3 +258,4 @@ sketch
 
 .env*
 !.env*.template
+data.sqld/

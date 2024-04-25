@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import db from "@/lib/drizzlePg";
+import db from "@/lib/drizzleLibSQL";
 
 const exampleData = {
     rows: [

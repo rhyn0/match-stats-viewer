@@ -2,9 +2,10 @@ import { defineConfig } from "drizzle-kit";
 import { env } from "@/env";
 export default defineConfig({
     schema: "./db/schema/*",
-    driver: "pg",
+    driver: "turso",
     dbCredentials: {
-        connectionString: env.POSTGRES_URL,
+        url: env.SQLITE_DATABASE_URL,
+        authToken: env.SQLITE_DATABASE_AUTH_TOKEN,
     },
     verbose: true,
     strict: true,

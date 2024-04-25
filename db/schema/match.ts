@@ -1,26 +1,28 @@
 /** This is the raw input of matches for the tournament. */
 
-import { integer, pgTable, serial, varchar, date } from "drizzle-orm/pg-core";
+import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 
 import { teams } from "./team";
 import { maps } from "./map";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { playerMatches } from "./playerMatch";
 
-export const matches = pgTable("matches_played", {
-    id: serial("id").primaryKey(),
-    teamAName: varchar("team_a_name", { length: 256 }),
+export const matches = sqliteTable("matches_played", {
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    teamAName: text("team_a_name", { length: 256 }),
     teamA: integer("team_a_id")
         .references(() => teams.id)
         .notNull(),
-    teamBName: varchar("team_b_name", { length: 256 }),
+    teamBName: text("team_b_name", { length: 256 }),
     teamB: integer("team_b_id")
         .references(() => teams.id)
         .notNull(),
-    rawRoundCount: varchar("raw_rounds", { length: 5 }).notNull(),
+    rawRoundCount: text("raw_rounds", { length: 5 }).notNull(),
     roundCountA: integer("rounds_for_a").notNull(),
     roundCountB: integer("rounds_for_b").notNull(),
-    playDate: date("match_date", { mode: "date" }).defaultNow().notNull(),
+    playDate: integer("match_date", { mode: "timestamp" })
+        .default(sql`CURRENT_TIMESTAMP`)
+        .notNull(),
     mapPlayedId: integer("map_id")
         .references(() => maps.id)
         .notNull(),

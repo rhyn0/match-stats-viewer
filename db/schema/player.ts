@@ -1,27 +1,23 @@
 /** Specifics about player performance in the tournament. */
 
 import { relations } from "drizzle-orm";
-import {
-    integer,
-    pgTable,
-    serial,
-    uniqueIndex,
-    varchar,
-} from "drizzle-orm/pg-core";
+
+import { sqliteTable, integer, unique, text } from "drizzle-orm/sqlite-core";
 import { playerMatches } from "./playerMatch";
 import { teams } from "./team";
 
-export const players = pgTable(
+export const players = sqliteTable(
     "players",
     {
-        id: serial("id").primaryKey(),
-        // TODO: make this a FK
-        teamId: integer("team_id"), // if its null they are a sub
-        name: varchar("player_name").notNull(),
+        id: integer("id", { mode: "number" }).primaryKey({
+            autoIncrement: true,
+        }),
+        teamId: integer("team_id").references(() => teams.id), // if its null they are a sub
+        name: text("player_name").notNull(),
     },
     (players) => {
         return {
-            nameIndex: uniqueIndex("player_name_uniq_idx").on(players.name),
+            nameIndex: unique("player_name_uniq_idx").on(players.name),
         };
     },
 );

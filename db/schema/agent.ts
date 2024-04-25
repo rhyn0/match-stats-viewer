@@ -1,30 +1,32 @@
 /** Statistics about each agent's performance in the tournament. */
 
-import {
-    pgEnum,
-    pgTable,
-    serial,
-    uniqueIndex,
-    varchar,
-} from "drizzle-orm/pg-core";
+import { sqliteTable, integer, unique, text } from "drizzle-orm/sqlite-core";
 
-export const agentTypeEnum = pgEnum("agent_types", [
+export const agentTypeEnum = [
     "controller",
     "sentinel",
     "duelist",
     "initiator",
-]);
+] as const;
 
-export const agents = pgTable(
+export type agentType = (typeof agentTypeEnum)[keyof typeof agentTypeEnum];
+
+export const agents = sqliteTable(
     "agents",
     {
-        id: serial("id").primaryKey(),
-        name: varchar("agent_name").notNull(),
-        agentType: agentTypeEnum("agent_type"),
+        id: integer("id", { mode: "number" }).primaryKey({
+            autoIncrement: true,
+        }),
+        name: text("agent_name").notNull(),
+        agentType: text("agent_type", {
+            // type hint to ourselves that the possible expected values
+            // no checking
+            enum: agentTypeEnum,
+        }),
     },
     (agents) => {
         return {
-            agentNameIdx: uniqueIndex("agent_name_uniq_idx").on(agents.name),
+            agentNameIdx: unique("agent_name_uniq_idx").on(agents.name),
         };
     },
 );

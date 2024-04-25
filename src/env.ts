@@ -4,7 +4,8 @@ import * as dotenv from "dotenv";
 dotenv.config({ path: "./.env.local" });
 export const env = createEnv({
     server: {
-        POSTGRES_URL: z.string().url(),
+        SQLITE_DATABASE_URL: z.string().url(),
+        SQLITE_DATABASE_AUTH_TOKEN: z.string().min(1),
     },
     // For Next.js >= 13.4.4, you only need to destructure client variables:
     // experimental__runtimeEnv: {

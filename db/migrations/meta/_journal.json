@@ -1,12 +1,12 @@
 {
     "version": "5",
-    "dialect": "pg",
+    "dialect": "sqlite",
     "entries": [
         {
             "idx": 0,
             "version": "5",
-            "when": 1713573883276,
-            "tag": "0000_violet_susan_delgado",
+            "when": 1714019312508,
+            "tag": "0000_foamy_norman_osborn",
             "breakpoints": true
         }
     ]

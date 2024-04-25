@@ -39,5 +39,11 @@
     "eslint.format.enable": false,
     "eslint.options": {
         "overrideConfigFile": "./.eslintrc.json"
+    },
+    "workbench.editor.customLabels.patterns": {
+        "**/app/**/page.tsx": "${dirname} - Page",
+        "**/app/**/layout.tsx": "${dirname} - Layout",
+        "**/app/**/loading.tsx": "${dirname} - Loading",
+        "**/app/**/route.ts": "${dirname} - Route"
     }
 }
