@@ -7,7 +7,7 @@ import React from "react";
 
 async function getPlayerStats(): Promise<OverallPlayerStatRecord[]> {
     const response = await fetch("/api/stats/players", {
-        next: { tags: ["stats", "players"] },
+        next: { tags: ["stats", "players"], revalidate: 60 },
     });
     if (!response.ok) {
         console.error("Error fetching playerStats: ", await response.text());

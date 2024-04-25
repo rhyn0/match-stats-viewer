@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import db from "@/lib/drizzleLibSQL";
 import { calculateKd } from "@/lib/kdCalculation";
 
+export const revalidate = 1800;
+
 export async function GET(): Promise<NextResponse> {
     const playerResult = await db.query.players.findMany({
         columns: {
