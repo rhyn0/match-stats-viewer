@@ -32,7 +32,7 @@ export default function StatPage() {
     }, []);
 
     if (!playerData) {
-        return null;
+        return <div> Loading...</div>;
     }
     return (
         <main>

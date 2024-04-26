@@ -60,6 +60,10 @@ npm run generate
 npm run push
 ```
 
+## Database Host
+
+Happily using [Turso](https://turso.tech/) for a distributed and replicated SQL database near the edge.
+
 ## NextJS
 
 ### Learn More

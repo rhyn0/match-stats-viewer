@@ -30,5 +30,6 @@ export const teamInfoRel = relations(players, ({ one }) => ({
     teamInfoRel: one(teams, {
         fields: [players.teamId],
         references: [teams.id],
+        relationName: "teamInfoRel",
     }),
 }));

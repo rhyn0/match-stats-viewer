@@ -32,24 +32,19 @@ export async function GET(): Promise<NextResponse> {
                     },
                 },
             },
-            teamInfoRel: {
-                columns: {
-                    teamName: true,
-                    defaultName: true,
-                },
-            },
+            teamInfoRel: true,
         },
     });
-
     const finalStats = playerResult.map((playerStats) => ({
         // @ts-expect-error - cant hint the sub relation
         ...calculateStats(playerStats),
         id: playerStats.id,
         teamName:
             // @ts-expect-error - fails to load the relationship
-            playerStats.teamInfoRel.teamName ??
+            playerStats.teamInfoRel?.teamName ??
             // @ts-expect-error - fails to load the relationship
-            playerStats.teamInfoRel.defaultName,
+            playerStats.teamInfoRel?.defaultName ??
+            "Sub",
         playerName: playerStats.name,
     }));
 

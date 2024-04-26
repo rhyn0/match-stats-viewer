@@ -40,3 +40,34 @@ export const PlayerStatRecordZ = z.object({
 }) satisfies z.ZodType<OverallPlayerStatRecord>;
 
 export type FilterVariantType = "text" | "range" | "select";
+
+export interface UploadMatchData {
+    matchRecord: MatchRecord;
+    playerNames: string[];
+    playerMatchRecords: PlayerMatchRecord[];
+}
+
+export interface MatchRecord {
+    teamAName: string;
+    teamBName: string;
+    roundCount: {
+        raw: string;
+        roundsA: number;
+        roundsB: number;
+    };
+    date: Date;
+    mapName: string;
+}
+
+export interface PlayerMatchRecord {
+    playerName: string;
+    agentName: string;
+    kda: {
+        raw: string;
+        kills: number;
+        deaths: number;
+        assists: number;
+    };
+}
+export const roundCountRegex = /(\d{1,2})-(\d{1,2})/;
+export const kdaRegex = /(\d+)\/(\d+)\/(\d+)/;

@@ -8,8 +8,35 @@ export const agentTypeEnum = [
     "duelist",
     "initiator",
 ] as const;
+export const agentNameEnum = [
+    "Astra",
+    "Breach",
+    "Brimstone",
+    "Chamber",
+    "Clove",
+    "Cypher",
+    "Deadlock",
+    "Fade",
+    "Gekko",
+    "Harbor",
+    "Iso",
+    "Jett",
+    "Kayo",
+    "Killjoy",
+    "Neon",
+    "Omen",
+    "Phoenix",
+    "Raze",
+    "Reyna",
+    "Sage",
+    "Skye",
+    "Sova",
+    "Viper",
+    "Yoru",
+] as const;
 
 export type agentType = (typeof agentTypeEnum)[keyof typeof agentTypeEnum];
+export type agentName = (typeof agentNameEnum)[keyof typeof agentNameEnum];
 
 export const agents = sqliteTable(
     "agents",

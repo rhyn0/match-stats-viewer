@@ -5,71 +5,54 @@
 -- To Run: psql <LOGIN INFO> -f example-data/example.sql
 BEGIN;
 INSERT INTO participating_teams (default_name, team_name)
-VALUES ('team 1', 'Example team');
+VALUES
+    ('Team 1',	'Turkish Quandale Dingle'),
+    ('Team 2',	'Jason Chang'),
+    ('Team 3',	'Indecisives'),
+    ('Team 4',	'Hardstuck StepBros'),
+    ('Team 5',	'Cotton Carnos'),
+    ('Team 6',	'Kitty Meow Meow Burger Time'),
+    ('Team 7',	'Jeffrey Armstrong'),
+    ('Team 8',	'2005 Honda Civic'),
+    ('Team 9',	'Despair'),
+    ('Team 10',	'Team IDC');
 
 INSERT INTO agents (agent_name, agent_type)
-VALUES ('Astra', 'controller');
+VALUES
+    ('Astra', 'controller'),
+    ('Breach', 'initiator'),
+    ('Brimstone', 'controller'),
+    ('Chamber', 'sentinel'),
+    ('Clove', 'controller'),
+    ('Cypher', 'sentinel'),
+    ('Deadlock', 'sentinel'),
+    ('Fade', 'initiator'),
+    ('Gekko', 'initiator'),
+    ('Harbor', 'controller'),
+    ('Iso', 'duelist'),
+    ('Jett', 'duelist'),
+    ('Kayo', 'initiator'),
+    ('Killjoy', 'sentinel'),
+    ('Neon', 'duelist'),
+    ('Omen', 'controller'),
+    ('Phoenix', 'duelist'),
+    ('Raze', 'duelist'),
+    ('Reyna', 'duelist'),
+    ('Sage', 'sentinel'),
+    ('Skye', 'initiator'),
+    ('Sova', 'initiator'),
+    ('Viper', 'controller'),
+    ('Yoru', 'duelist');
 
 INSERT INTO maps (map_name)
-VALUES ('Ascent');
+VALUES
+    ('Ascent'),
+    ('Bind'),
+    ('Breeze'),
+    ('Icebox'),
+    ('Lotus'),
+    ('Split'),
+    ('Sunset');
 
-INSERT INTO players (team_id, player_name) 
-SELECT t.id, 'EL33T'
-FROM participating_teams t
-WHERE t.default_name = 'team 1'
-ORDER BY t.id ASC
-LIMIT 1;
-
--- This will be weird but is valid according to schema
-INSERT INTO matches_played
-    (
-        team_a_name,
-        team_a_id,
-        team_b_name,
-        team_b_id,
-        raw_rounds,
-        rounds_for_a,
-        rounds_for_b,
-        map_id
-    )
-SELECT
-    t.team_name,
-    t.id,
-    t.team_name,
-    t.id,
-    '11-13',
-    11,
-    13,
-    m.id
-FROM participating_teams t, maps m
-WHERE t.default_name = 'team 1' AND m.map_name = 'Ascent'
-LIMIT 1;
-
-INSERT INTO player_matches
-    (
-        player_id,
-        match_id,
-        agent_id,
-        match_place,
-        raw_kda,
-        player_kills,
-        player_deaths,
-        player_assists
-    )
-SELECT
-    pl.id,
-    mp.id,
-    a.id,
-    1,
-    '20/10/2',
-    20,
-    10,
-    2
-FROM players pl, matches_played mp, agents a
-WHERE 
-    pl.player_name = 'EL33T' AND
-    mp.raw_rounds = '11-13' AND
-    a.agent_name = 'Astra'
-LIMIT 1;
 
 COMMIT;
