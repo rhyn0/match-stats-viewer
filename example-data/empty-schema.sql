@@ -5,3 +5,4 @@ DELETE FROM players;
 DELETE FROM agents;
 DELETE FROM participating_teams;
 DELETE FROM maps;
+DELETE FROM sqlite_sequence WHERE name='participating_teams';
