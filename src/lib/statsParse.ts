@@ -6,7 +6,7 @@ export function parseRoundCount(rawRounds: string): [number, number] {
     if (!roundMatch || roundMatch.length !== 3) {
         throw new Error(`Failed to parse for round count from: ${rawRounds}`);
     }
-    return roundMatch.map((val) => parseInt(val)) as [number, number];
+    return [parseInt(roundMatch[1]), parseInt(roundMatch[2])];
 }
 
 export function parseKda(rawKda: string): [number, number, number] {
@@ -15,5 +15,9 @@ export function parseKda(rawKda: string): [number, number, number] {
     if (!kdaMatch || kdaMatch.length !== 4) {
         throw new Error(`Failed to parse KDA string from: ${rawKda}`);
     }
-    return kdaMatch.map((val) => parseInt(val)) as [number, number, number];
+    return [
+        parseInt(kdaMatch[1]),
+        parseInt(kdaMatch[2]),
+        parseInt(kdaMatch[3]),
+    ];
 }
