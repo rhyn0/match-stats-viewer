@@ -1,8 +1,13 @@
+"use client";
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 
 import { ThemePicker } from "./themePicker";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/config/site";
+import { buttonVariants } from "./ui/button";
+import { Icons } from "./icons";
 
 interface HeaderProps {
     className?: string;
@@ -16,12 +21,32 @@ export function Header({ className }: HeaderProps) {
                     <Link
                         href="/"
                         scroll
+                        className="flex items-center space-x-2"
                     >
-                        Text Search
+                        <Image
+                            src="/img/slovct-logo.png"
+                            alt="SLOVCT"
+                            height={40}
+                            width={40}
+                        />
+                        Match Stats Viewer
                     </Link>
                 </div>
                 <div className="flex flex-1 md:justify-end">
-                    <ThemePicker />
+                    <nav className="flex items-center space-x-2">
+                        <Link href={siteConfig.github.link}>
+                            <div
+                                className={cn(
+                                    buttonVariants({ variant: "ghost" }),
+                                    "mb-1 w-9 px-0 align-middle",
+                                )}
+                            >
+                                <Icons.github className="size-5" />
+                                <span className="sr-only">GitHub</span>
+                            </div>
+                        </Link>
+                        <ThemePicker />
+                    </nav>
                 </div>
             </div>
         </header>
