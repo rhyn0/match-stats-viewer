@@ -27,6 +27,7 @@
         "**/*.ts",
         "**/*.tsx",
         ".next/types/**/*.ts",
+        "svgr.d.ts",
         "scripts/migrate.js"
     ],
     "exclude": ["node_modules"],
