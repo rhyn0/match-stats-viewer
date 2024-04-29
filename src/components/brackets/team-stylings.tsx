@@ -42,6 +42,9 @@ const TeamElementDiv = React.forwardRef<HTMLDivElement, TeamElementProps>(
                 ref={ref}
                 className={cn(teamVariants({ variant, className }), {
                     "h-auto": variant === "time" && isSmallerThanBreakpoint,
+                    "w-full":
+                        variant === "singleLine" && isSmallerThanBreakpoint,
+                    "": variant === "singleLine" && !isSmallerThanBreakpoint,
                 })}
             >
                 {children}
