@@ -1,10 +1,10 @@
 services:
-    postgres:
-        image: postgres:latest
+    sqld:
+        image: ghcr.io/tursodatabase/libsql-server:latest
         environment:
-            POSTGRES_HOST_AUTH_METHOD: trust
+            SQLD_NODE: primary
         ports:
-            - "5432:5432"
+            - "8080:8080"
         networks:
             - my_network
 
