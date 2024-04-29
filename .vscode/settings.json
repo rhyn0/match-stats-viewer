@@ -26,8 +26,8 @@
         "**/.project": false,
         "**/.settings": false,
         "**/.factorypath": false,
-        "**/.next": true,
-        "**/node_modules": true
+        "**/.next": false,
+        "**/node_modules": false
     },
     "eslint.enable": true,
     "eslint.codeAction.disableRuleComment": {

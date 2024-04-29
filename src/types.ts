@@ -1,4 +1,5 @@
 import { z } from "zod";
+import React from "react";
 export interface OverallPlayerStatRecord {
     // fields from request directly
     id: number;
@@ -71,3 +72,56 @@ export interface PlayerMatchRecord {
 }
 export const roundCountRegex = /(\d{1,2})-(\d{1,2})/;
 export const kdaRegex = /(\d+)\/(\d+)\/(\d+)/;
+
+export interface IRoundProps extends Record<string, unknown> {
+    seeds: ISeedProps[];
+    title: string;
+}
+
+export interface TeamInfo extends Record<string, unknown> {
+    name?: string;
+}
+
+export interface ISeedProps extends Record<string, unknown> {
+    id: number | string;
+    teams: TeamInfo[];
+    date?: string;
+    mobileBreakpoint?: number;
+}
+
+export interface IRenderSeedProps {
+    seed: ISeedProps;
+    breakpoint: number;
+    roundIndex: number;
+    seedIndex: number;
+    rounds?: IRoundProps[];
+}
+
+export interface ISingleEliminationProps {
+    // If true, the component direction will be set to RTL
+    rtl?: boolean;
+    // Array of rounds matching RoundProps shape,
+    rounds: IRoundProps[];
+    // Single round className
+    roundClassName?: string;
+    /** @default 992, if you don't want a mobile breakpoint, pass 0 */
+    mobileBreakpoint?: number;
+    // The whole bracket className
+    bracketClassName?: string;
+    /**
+     * @param {string} title string or component passed with each round
+     * @param {number} round the current round index
+     */
+    roundTitleComponent?: (
+        // eslint-disable-next-line no-unused-vars
+        title: string | JSX.Element,
+        // eslint-disable-next-line no-unused-vars
+        roundIdx: number,
+    ) => JSX.Element;
+    /**
+     * @param {object} seed the current seed
+     * @param {number} breakpoint the breakpoint used to determine responsive size
+     * @param {number} roundIdx the current round index
+     */
+    renderSeedComponent?: React.FC<IRenderSeedProps>;
+}

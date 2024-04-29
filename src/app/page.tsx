@@ -11,6 +11,9 @@ export default function Home() {
                 <Button asChild>
                     <Link href={"/stats"}>Statistics</Link>
                 </Button>
+                <Button asChild>
+                    <Link href={"/playoffs"}>Playoffs</Link>
+                </Button>
             </div>
         </main>
     );
