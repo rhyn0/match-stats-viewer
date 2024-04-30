@@ -323,5 +323,6 @@ function getCommonPinningStyles<TData extends unknown>(
         position: isPinned ? "sticky" : "relative",
         width: column.getSize(),
         zIndex: isPinned ? 1 : 0,
+        background: "hsl(var(--background))",
     };
 }
