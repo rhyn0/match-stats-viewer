@@ -15,6 +15,7 @@ import {
     getPaginationRowModel,
     Table as TableT,
     PaginationState,
+    Column,
 } from "@tanstack/react-table";
 
 import {
@@ -33,7 +34,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import React from "react";
+import React, { CSSProperties } from "react";
 import {
     ChevronDown,
     ChevronUp,
@@ -56,7 +57,8 @@ declare module "@tanstack/react-table" {
     }
 }
 
-interface DataTableProps<TData, TValue> {
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+interface DataTableProps<TData extends unknown, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     columnOrder?: string[];
@@ -67,7 +69,8 @@ interface DataTableProps<TData, TValue> {
     // >;
 }
 
-export function DataTable<TData, TValue>({
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+export function DataTable<TData extends unknown, TValue>({
     columns,
     data,
     columnOrder,
@@ -96,6 +99,9 @@ export function DataTable<TData, TValue>({
         onColumnOrderChange,
         initialState: {
             columnFilters, // will i be able to directly tie in a filter change here?
+            columnPinning: {
+                left: ["playerName", "teamName"],
+            },
         },
     });
     return (
@@ -111,6 +117,9 @@ export function DataTable<TData, TValue>({
                                             key={header.id}
                                             colSpan={header.colSpan}
                                             className="border"
+                                            style={getCommonPinningStyles<TData>(
+                                                header.column,
+                                            )}
                                         >
                                             {header.isPlaceholder ? null : (
                                                 <div className="flex flex-col space-y-2">
@@ -152,7 +161,12 @@ export function DataTable<TData, TValue>({
                                     }
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell
+                                            key={cell.id}
+                                            style={getCommonPinningStyles(
+                                                cell.column,
+                                            )}
+                                        >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext(),
@@ -281,4 +295,33 @@ function SortIcon({ sortState }: { sortState: false | SortDirection }) {
     } else {
         return <ChevronDown />;
     }
+}
+
+//These are the important styles to make sticky column pinning work!
+//Apply styles like this using your CSS strategy of choice with this kind of logic to head cells, data cells, footer cells, etc.
+//View the index.css file for more needed styles such as border-collapse: separate
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
+function getCommonPinningStyles<TData extends unknown>(
+    column: Column<TData>,
+): CSSProperties {
+    const isPinned = column.getIsPinned();
+    const isLastLeftPinnedColumn =
+        isPinned === "left" && column.getIsLastColumn("left");
+    const isFirstRightPinnedColumn =
+        isPinned === "right" && column.getIsFirstColumn("right");
+
+    return {
+        boxShadow: isLastLeftPinnedColumn
+            ? "-4px 0 4px -4px gray inset"
+            : isFirstRightPinnedColumn
+              ? "4px 0 4px -4px gray inset"
+              : undefined,
+        left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
+        right:
+            isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
+        opacity: isPinned ? 0.9 : 1,
+        position: isPinned ? "sticky" : "relative",
+        width: column.getSize(),
+        zIndex: isPinned ? 1 : 0,
+    };
 }
