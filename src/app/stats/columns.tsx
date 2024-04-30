@@ -1,5 +1,6 @@
 // work on player stats first
 
+import { ColoredRatioNumber } from "@/components/coloredRatioNumber";
 import { OverallPlayerStatRecord } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -81,6 +82,12 @@ export const columns: ColumnDef<OverallPlayerStatRecord>[] = [
                 meta: {
                     filterVariant: "range",
                 },
+                cell: ({ getValue }) => (
+                    <ColoredRatioNumber
+                        value={getValue()}
+                        breakpoint={1.0}
+                    />
+                ),
             },
             {
                 accessorKey: "kdRatio.min",
@@ -88,6 +95,12 @@ export const columns: ColumnDef<OverallPlayerStatRecord>[] = [
                 meta: {
                     filterVariant: "range",
                 },
+                cell: ({ getValue }) => (
+                    <ColoredRatioNumber
+                        value={getValue()}
+                        breakpoint={1.0}
+                    />
+                ),
             },
             {
                 accessorKey: "kdRatio.max",
@@ -95,6 +108,12 @@ export const columns: ColumnDef<OverallPlayerStatRecord>[] = [
                 meta: {
                     filterVariant: "range",
                 },
+                cell: ({ getValue }) => (
+                    <ColoredRatioNumber
+                        value={getValue()}
+                        breakpoint={1.0}
+                    />
+                ),
             },
         ],
     },
