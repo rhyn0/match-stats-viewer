@@ -129,15 +129,16 @@ function calculateStats(row: PlayerRow): CalculatedStats {
             },
             defaultRecord,
         );
-    return {
+    const returnData = {
         totalKills,
         totalDeaths,
         totalAssists,
         roundsPlayed,
         kdRatio: {
             ...kdRatio,
-            overall: totalKills / totalDeaths,
+            overall: calculateKd({ kills: totalKills, deaths: totalDeaths }),
         },
         gamesPlayed: row.playerMatchesRel.length,
     };
+    return returnData;
 }
