@@ -16,13 +16,16 @@ First, run the development server:
 npm run dev
 ```
 
-Then, configure access to a PostgreSQL database. For the ease of startup a `docker-compose.yaml` is provided in the `./docker` folder.
+Then, configure access to a LibSQL database. For the ease of startup a `docker-compose.yaml` is provided in the `./docker` folder.
 Then additionally use [Drizzle Kit](https://orm.drizzle.team/kit-docs) to initialize the schema. To start the dockerized database:
 
 ```bash
 docker compose -f docker/docker-compose.yaml up --build --detach
+# test with Turso CLI that you can connect
+# turso db shell http://localhost:8080
 # if using nvm
 # nvm use
+
 # setup the .env.local file
 cp .env.template .env.local
 # default of template is to use a localhost PostgreSQL database
@@ -33,11 +36,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Code
 
-This project uses a PostgreSQL database to store the data and model the data.
+This project uses a LibSQL database to store the data and model the data.
 
 To connect I use:
 
--   [Postgres.JS](https://github.com/porsager/postgres)
+-   [Turso](https://docs.turso.tech/sdk/ts/quickstart)
 -   [Drizzle](https://orm.drizzle.team/)
 
 ### Linting and Formatting
@@ -74,7 +77,3 @@ To learn more about Next.js, take a look at the following resources:
 -   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## ToDos
-
--   [x] Fix the generate Drizzle Kit commands to not require us setting ENV. This probably involves `dotenv` in `src/env.ts`
