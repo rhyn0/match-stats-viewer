@@ -28,7 +28,8 @@ export function DebouncedInput({
         }, debounce);
 
         return () => clearTimeout(timeout);
-    }, [value, onChange, debounce]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value]);
 
     return (
         <Input
