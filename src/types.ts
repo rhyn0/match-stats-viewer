@@ -1,3 +1,4 @@
+import { agentNameEnum } from "@db/schema/agent";
 import { z } from "zod";
 export interface OverallPlayerStatRecord {
     // fields from request directly
@@ -16,6 +17,7 @@ export interface OverallPlayerStatRecord {
         min: number;
         max: number;
     };
+    agentMap: Partial<Record<(typeof agentNameEnum)[number], number>>;
 }
 
 export const PlayerStatRecordZ = z.object({
@@ -37,6 +39,7 @@ export const PlayerStatRecordZ = z.object({
         min: z.number(),
         max: z.number(),
     }),
+    agentMap: z.record(z.enum(agentNameEnum), z.number()),
 }) satisfies z.ZodType<OverallPlayerStatRecord>;
 
 export type FilterVariantType = "text" | "range" | "select";

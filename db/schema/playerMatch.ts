@@ -32,3 +32,10 @@ export const matchRel = relations(playerMatches, ({ one }) => ({
         references: [matches.id],
     }),
 }));
+
+export const agentPlayedByPlayerRel = relations(playerMatches, ({ one }) => ({
+    agentPlayedByPlayerRel: one(agents, {
+        fields: [playerMatches.playerAgentId],
+        references: [agents.id],
+    }),
+}));

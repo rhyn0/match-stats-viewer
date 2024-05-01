@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/drizzleLibSQL";
 import { calculateKd } from "@/lib/kdCalculation";
+import { agentNameEnum, agentTypeEnum } from "@db/schema/agent";
 
 export const revalidate = 1800;
 
@@ -30,6 +31,7 @@ export async function GET(): Promise<NextResponse> {
                             roundCountB: true,
                         },
                     },
+                    agentPlayedByPlayerRel: true,
                 },
             },
             teamInfoRel: true,
@@ -46,6 +48,8 @@ export async function GET(): Promise<NextResponse> {
             playerStats.teamInfoRel?.defaultName ??
             "Sub",
         playerName: playerStats.name,
+        // @ts-expect-error - cant hint the sub relation
+        agentMap: calculateAgentsPlayed(playerStats.playerMatchesRel),
     }));
 
     return new NextResponse(
@@ -65,6 +69,11 @@ interface PlayerMatchRecord {
         roundCountA: number;
         roundCountB: number;
     };
+    agentPlayedByPlayerRel: {
+        id: number;
+        name: (typeof agentNameEnum)[number];
+        agentType: (typeof agentTypeEnum)[number];
+    };
 }
 interface PlayerRow {
     id: number;
@@ -72,7 +81,7 @@ interface PlayerRow {
     teamId: number | null;
     playerMatchesRel: PlayerMatchRecord[];
 }
-interface CalculatedStats {
+interface CalculatedKdStats {
     gamesPlayed: number;
     kdRatio: {
         overall: number;
@@ -84,7 +93,7 @@ interface CalculatedStats {
     totalDeaths: number;
     totalAssists: number;
 }
-function calculateStats(row: PlayerRow): CalculatedStats {
+function calculateStats(row: PlayerRow): CalculatedKdStats {
     const defaultRecord = {
         totalKills: 0,
         totalDeaths: 0,
@@ -141,4 +150,22 @@ function calculateStats(row: PlayerRow): CalculatedStats {
         gamesPlayed: row.playerMatchesRel.length,
     };
     return returnData;
+}
+
+type agentNameEnumT = (typeof agentNameEnum)[number];
+type AgentMapType = Partial<Record<agentNameEnumT, number>>;
+
+function calculateAgentsPlayed(row: PlayerMatchRecord[]): AgentMapType {
+    const agentMap = new Map<agentNameEnumT, number>();
+    for (const matchRecord of row) {
+        const existingValue =
+            agentMap.get(
+                matchRecord.agentPlayedByPlayerRel.name as agentNameEnumT,
+            ) ?? 0;
+        agentMap.set(
+            matchRecord.agentPlayedByPlayerRel.name as agentNameEnumT,
+            existingValue + 1,
+        );
+    }
+    return Object.fromEntries(agentMap.entries()) as AgentMapType;
 }
