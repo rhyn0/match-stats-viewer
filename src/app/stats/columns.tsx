@@ -1,7 +1,9 @@
 // work on player stats first
 
 import { ColoredRatioNumber } from "@/components/coloredRatioNumber";
+import { cn } from "@/lib/utils";
 import { OverallPlayerStatRecord } from "@/types";
+import { agentNameEnum } from "@db/schema/agent";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<OverallPlayerStatRecord>[] = [
@@ -116,5 +118,44 @@ export const columns: ColumnDef<OverallPlayerStatRecord>[] = [
                 ),
             },
         ],
+    },
+    {
+        id: "agentStats",
+        header: "Agent Stats",
+        columns: agentNameEnum.map((agentName) => ({
+            id: agentName,
+            accessorFn: (row) => row.agentMap[agentName] ?? 0,
+            header: agentName,
+            meta: {
+                filterVariant: "range",
+            },
+            cell: ({ getValue, row: { getValue: getRowValue } }) => {
+                const rowAgentPlays: number[] = agentNameEnum.map((name) =>
+                    getRowValue(name),
+                );
+                const maxAgentPlay = rowAgentPlays.reduce(
+                    (acc, val) => (acc > val ? acc : val),
+                    Number.NEGATIVE_INFINITY,
+                );
+                const minAgentPlay = rowAgentPlays.reduce(
+                    (acc, val) => (acc < val ? acc : val),
+                    Number.POSITIVE_INFINITY,
+                );
+                const currAgentPlay = getValue();
+                return (
+                    <div
+                        className={cn("h-10 w-10 p-2 text-center", {
+                            "bg-red-500": currAgentPlay === minAgentPlay,
+                            "bg-blue-400":
+                                minAgentPlay < currAgentPlay &&
+                                currAgentPlay < maxAgentPlay,
+                            "bg-green-600": currAgentPlay === maxAgentPlay,
+                        })}
+                    >
+                        {currAgentPlay}
+                    </div>
+                );
+            },
+        })),
     },
 ];

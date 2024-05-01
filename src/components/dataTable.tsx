@@ -48,6 +48,7 @@ import { Filter } from "./Filter";
 import { FilterVariantType } from "@/types";
 import { Button, ButtonProps } from "./ui/button";
 import { Input } from "./ui/input";
+import { ColumnVisibiltyCheckbox } from "./TableColumnVisibiltyCheckbox";
 
 declare module "@tanstack/react-table" {
     //allows us to define custom properties for our columns
@@ -82,6 +83,9 @@ export function DataTable<TData extends unknown, TValue>({
             pageIndex: 0,
             pageSize: 10,
         });
+    const [columnVisibility, setColumnVisibility] = React.useState<
+        Record<string, boolean>
+    >({});
     const table = useReactTable({
         data,
         columns,
@@ -92,7 +96,9 @@ export function DataTable<TData extends unknown, TValue>({
         getFacetedUniqueValues: getFacetedUniqueValues(),
         getPaginationRowModel: getPaginationRowModel(),
         onPaginationChange: setTablePagination,
+        onColumnVisibilityChange: setColumnVisibility,
         state: {
+            columnVisibility,
             columnOrder,
             pagination: tablePagination,
         },
@@ -104,8 +110,23 @@ export function DataTable<TData extends unknown, TValue>({
             },
         },
     });
+    const checkboxVisibility = Object.fromEntries(
+        table
+            .getAllLeafColumns()
+            .map((column) => [column.id, column.getIsVisible()]),
+    );
     return (
         <>
+            <ColumnVisibiltyCheckbox
+                columnState={checkboxVisibility}
+                onChange={(colName, nextState) => {
+                    if (typeof nextState !== "boolean") return;
+                    setColumnVisibility((prev) => ({
+                        ...prev,
+                        [colName]: nextState,
+                    }));
+                }}
+            />
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>

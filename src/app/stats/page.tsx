@@ -27,6 +27,7 @@ export default function StatPage() {
     const [playerData, setPlayerData] = React.useState<
         OverallPlayerStatRecord[] | undefined
     >(undefined);
+
     React.useEffect(() => {
         getPlayerStats().then((data) => setPlayerData(data));
     }, []);

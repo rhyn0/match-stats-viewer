@@ -1,6 +1,8 @@
 /** Statistics about each agent's performance in the tournament. */
 
+import { relations } from "drizzle-orm";
 import { sqliteTable, integer, unique, text } from "drizzle-orm/sqlite-core";
+import { playerMatches } from "./playerMatch";
 
 export const agentTypeEnum = [
     "controller",
@@ -57,3 +59,7 @@ export const agents = sqliteTable(
         };
     },
 );
+
+export const agentInPlayerMatchesRel = relations(agents, ({ many }) => ({
+    agentInPlayerMatchesRel: many(playerMatches),
+}));
