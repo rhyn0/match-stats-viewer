@@ -31,3 +31,23 @@ export const matches = sqliteTable("matches_played", {
 export const playerDetailsRel = relations(matches, ({ many }) => ({
     playerDetailsRel: many(playerMatches),
 }));
+
+export const teamDetailsRel = relations(matches, ({ one }) => ({
+    teamDetailsARel: one(teams, {
+        fields: [matches.teamA],
+        references: [teams.id],
+        relationName: "teamDetailsARel",
+    }),
+    teamDetailsBRel: one(teams, {
+        fields: [matches.teamB],
+        references: [teams.id],
+        relationName: "teamDetailsBRel",
+    }),
+}));
+
+export const mapForMatchRel = relations(matches, ({ one }) => ({
+    mapForMatchRel: one(maps, {
+        fields: [matches.mapPlayedId],
+        references: [maps.id],
+    }),
+}));

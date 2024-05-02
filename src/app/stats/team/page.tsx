@@ -1,21 +1,21 @@
 "use client";
-import { OverallPlayerStatRecord, PlayerStatRecordZ } from "@/types";
+import { TeamStatRecord, TeamStatRecordZ } from "@/types";
 import { DataTable } from "@/components/dataTable";
 import { columns } from "./columns";
 import { BackButton } from "@/components/BackButton";
 import React from "react";
 
-async function getPlayerStats(): Promise<OverallPlayerStatRecord[]> {
-    const response = await fetch("/api/stats/players", {
-        next: { tags: ["stats", "players"], revalidate: 60 },
+async function getTeamStats(): Promise<TeamStatRecord[]> {
+    const response = await fetch("/api/stats/teams", {
+        next: { tags: ["stats", "teams"], revalidate: 60 },
     });
     if (!response.ok) {
-        console.error("Error fetching playerStats: ", await response.text());
+        console.error("Error fetching teamStats: ", await response.text());
         return [];
     }
     const data: { rows: unknown[]; length: number } = await response.json();
     try {
-        const zData = PlayerStatRecordZ.array().parse(data.rows);
+        const zData = TeamStatRecordZ.array().parse(data.rows);
         return zData;
     } catch (e) {
         console.error("Unexpected data from PlayerStats: ", e);
@@ -24,25 +24,29 @@ async function getPlayerStats(): Promise<OverallPlayerStatRecord[]> {
 }
 
 export default function StatPage() {
-    const [playerData, setPlayerData] = React.useState<
-        OverallPlayerStatRecord[] | undefined
+    const [teamData, setTeamData] = React.useState<
+        TeamStatRecord[] | undefined
     >(undefined);
 
     React.useEffect(() => {
-        getPlayerStats().then((data) => setPlayerData(data));
+        getTeamStats().then((data) => setTeamData(data));
     }, []);
 
-    if (!playerData) {
+    if (!teamData) {
         return <div> Loading...</div>;
     }
     return (
         <main>
             <BackButton />
             <div className="container">
-                <h1 className="text-3xl">Player Stats</h1>
+                <h1 className="text-3xl">Team Stats</h1>
                 <DataTable
-                    data={playerData}
+                    data={teamData}
                     columns={columns}
+                    columnPinning={{
+                        left: ["defaultName", "teamName"],
+                    }}
+                    pageSizeChangingEnabled={false}
                 />
             </div>
         </main>

@@ -21,3 +21,20 @@ export function parseKda(rawKda: string): [number, number, number] {
         parseInt(kdaMatch[3]),
     ];
 }
+
+/**
+ * Handle Divide by zero by returning 0.
+ */
+export function handleDivZero({
+    wins,
+    plays,
+}: {
+    wins: number;
+    plays: number;
+}): number {
+    if (plays === 0) {
+        return 0;
+    } else {
+        return wins / plays;
+    }
+}
