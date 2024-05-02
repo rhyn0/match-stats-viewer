@@ -39,13 +39,14 @@ export default function StatPage() {
         <main>
             <BackButton />
             <div className="container">
-                <h1 className="text-3xl">Player Stats</h1>
+                <h1 className="text-3xl">Team Stats</h1>
                 <DataTable
                     data={teamData}
                     columns={columns}
                     columnPinning={{
                         left: ["defaultName", "teamName"],
                     }}
+                    pageSizeChangingEnabled={false}
                 />
             </div>
         </main>

@@ -68,6 +68,7 @@ interface DataTableProps<TData extends unknown, TValue> {
         left?: string[];
         right?: string[];
     };
+    pageSizeChangingEnabled?: boolean;
     // onColumnFiltersChange?: React.Dispatch<
     //     React.SetStateAction<ColumnFiltersState>
     // >;
@@ -81,6 +82,7 @@ export function DataTable<TData extends unknown, TValue>({
     onColumnOrderChange,
     columnFilters,
     columnPinning = {},
+    pageSizeChangingEnabled = true,
 }: DataTableProps<TData, TValue>) {
     const [tablePagination, setTablePagination] =
         React.useState<PaginationState>({
@@ -211,15 +213,22 @@ export function DataTable<TData extends unknown, TValue>({
                     </TableBody>
                 </Table>
             </div>
-            <TablePaginationNav table={table} />
+            <TablePaginationNav
+                table={table}
+                enablePageSizeChange={pageSizeChangingEnabled}
+            />
         </>
     );
 }
 
 interface TablePaginationNavProps<TData> {
     table: TableT<TData>;
+    enablePageSizeChange: boolean;
 }
-function TablePaginationNav<TData>({ table }: TablePaginationNavProps<TData>) {
+function TablePaginationNav<TData>({
+    table,
+    enablePageSizeChange,
+}: TablePaginationNavProps<TData>) {
     const pageSizeOptions = [10, 20, 50];
     return (
         <div className="flex flex-col items-center justify-end space-x-2 py-4">
@@ -275,6 +284,7 @@ function TablePaginationNav<TData>({ table }: TablePaginationNavProps<TData>) {
                     <Select
                         onValueChange={(val) => table.setPageSize(Number(val))}
                         value={`${table.getState().pagination.pageSize}`}
+                        disabled={!enablePageSizeChange}
                     >
                         <SelectTrigger className="max-w-fit rounded">
                             <SelectValue />

@@ -3,12 +3,12 @@
 import { relations, sql } from "drizzle-orm";
 import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 import { players } from "./player";
+import { matches } from "./match";
 
 export const teams = sqliteTable("participating_teams", {
     id: integer("id").primaryKey({ autoIncrement: true }),
     defaultName: text("default_name").notNull(),
     teamName: text("team_name"),
-    // TODO: default of modifiedAt to be now?
     modifiedAt: integer("modified_at", {
         mode: "timestamp",
     })
@@ -18,4 +18,9 @@ export const teams = sqliteTable("participating_teams", {
 
 export const teamPlayersRel = relations(teams, ({ many }) => ({
     teamPlayersRel: many(players),
+}));
+
+export const matchesForTeamRel = relations(teams, ({ many }) => ({
+    matchesForTeamARel: many(matches, { relationName: "teamDetailsARel" }),
+    matchesForTeamBRel: many(matches, { relationName: "teamDetailsBRel" }),
 }));
