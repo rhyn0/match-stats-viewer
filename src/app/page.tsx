@@ -9,7 +9,10 @@ export default function Home() {
                     <Link href={"/upload"}>Upload</Link>
                 </Button>
                 <Button asChild>
-                    <Link href={"/stats"}>Statistics</Link>
+                    <Link href={"/stats/player"}>Player Statistics</Link>
+                </Button>
+                <Button asChild>
+                    <Link href={"/stats/team"}>Team Statistics</Link>
                 </Button>
             </div>
         </main>

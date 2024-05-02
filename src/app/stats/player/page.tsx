@@ -43,6 +43,9 @@ export default function StatPage() {
                 <DataTable
                     data={playerData}
                     columns={columns}
+                    columnPinning={{
+                        left: ["playerName", "teamName"],
+                    }}
                 />
             </div>
         </main>

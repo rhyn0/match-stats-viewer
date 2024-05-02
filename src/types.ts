@@ -74,3 +74,47 @@ export interface PlayerMatchRecord {
 }
 export const roundCountRegex = /(\d{1,2})-(\d{1,2})/;
 export const kdaRegex = /(\d+)\/(\d+)\/(\d+)/;
+
+export const mapNames = [
+    "Ascent",
+    "Bind",
+    "Breeze",
+    "Icebox",
+    "Lotus",
+    "Split",
+    "Sunset",
+] as const;
+export type mapNameEnum = (typeof mapNames)[number];
+export interface mapStats {
+    played: number;
+    won: number;
+}
+export interface TeamStatRecord {
+    teamName?: string;
+    defaultName: string;
+    mapsPlayed: number;
+    mapStats: Partial<Record<mapNameEnum, mapStats>>;
+    roundStats: {
+        won: number;
+        played: number;
+    };
+    overtimes: number;
+}
+
+export const TeamStatRecordZ = z.object({
+    teamName: z.string().optional(),
+    defaultName: z.string().min(1),
+    mapsPlayed: z.number().finite(),
+    mapStats: z.record(
+        z.enum(mapNames),
+        z.object({
+            played: z.number().finite(),
+            won: z.number().finite(),
+        }),
+    ),
+    roundStats: z.object({
+        won: z.number().finite(),
+        played: z.number().finite(),
+    }),
+    overtimes: z.number().finite(),
+}) satisfies z.ZodType<TeamStatRecord>;

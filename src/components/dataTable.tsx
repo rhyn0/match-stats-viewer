@@ -57,7 +57,6 @@ declare module "@tanstack/react-table" {
         filterVariant?: FilterVariantType;
     }
 }
-
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 interface DataTableProps<TData extends unknown, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -65,6 +64,10 @@ interface DataTableProps<TData extends unknown, TValue> {
     columnOrder?: string[];
     onColumnOrderChange?: React.Dispatch<React.SetStateAction<string[]>>;
     columnFilters?: ColumnFiltersState;
+    columnPinning?: {
+        left?: string[];
+        right?: string[];
+    };
     // onColumnFiltersChange?: React.Dispatch<
     //     React.SetStateAction<ColumnFiltersState>
     // >;
@@ -77,6 +80,7 @@ export function DataTable<TData extends unknown, TValue>({
     columnOrder,
     onColumnOrderChange,
     columnFilters,
+    columnPinning = {},
 }: DataTableProps<TData, TValue>) {
     const [tablePagination, setTablePagination] =
         React.useState<PaginationState>({
@@ -105,9 +109,7 @@ export function DataTable<TData extends unknown, TValue>({
         onColumnOrderChange,
         initialState: {
             columnFilters, // will i be able to directly tie in a filter change here?
-            columnPinning: {
-                left: ["playerName", "teamName"],
-            },
+            columnPinning,
         },
     });
     const checkboxVisibility = Object.fromEntries(
