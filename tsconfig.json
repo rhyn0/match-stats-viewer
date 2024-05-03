@@ -1,6 +1,11 @@
 {
     "compilerOptions": {
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "target": "ES2020",
         "allowJs": true,
         "skipLibCheck": true,
         "strict": true,
@@ -18,8 +23,12 @@
             }
         ],
         "paths": {
-            "@/*": ["./src/*"],
-            "@db/*": ["./db/*"]
+            "@/*": [
+                "./src/*"
+            ],
+            "@db/*": [
+                "./db/*"
+            ]
         }
     },
     "include": [
@@ -30,7 +39,9 @@
         "svgr.d.ts",
         "scripts/migrate.js"
     ],
-    "exclude": ["node_modules"],
+    "exclude": [
+        "node_modules"
+    ],
     // extra checking config
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true

@@ -118,3 +118,4 @@ export const TeamStatRecordZ = z.object({
     }),
     overtimes: z.number().finite(),
 }) satisfies z.ZodType<TeamStatRecord>;
+export type InteractionDataTODO = unknown;
