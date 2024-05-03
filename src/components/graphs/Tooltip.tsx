@@ -27,7 +27,7 @@ export const Tooltip = ({ interactionData, width, height }: TooltipProps) => {
             }}
         >
             <div
-                className="absolulute ml-4 -translate-y-1/2 rounded border-transparent bg-black p-1 text-base text-white after:absolute after:-left-1/2 after:top-1/2 after:-translate-y-1/2 after:border-4 after:content-none"
+                className="absolulute ml-4 -translate-y-1/2 rounded border-transparent bg-black p-1 text-base text-white after:absolute after:-left-1/2 after:top-1/2 after:-translate-y-1/2 after:border-4 after:content-none dark:bg-slate-300 dark:text-black"
                 style={{
                     left: xPos,
                     top: yPos,
