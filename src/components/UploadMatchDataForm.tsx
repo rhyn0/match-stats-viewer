@@ -63,6 +63,10 @@ export default function UploadMatchDataForm({
             body: JSON.stringify(uploadData),
         });
     }, [matchData]);
+    const pagination = {
+        pageSize: 10,
+        pageIndex: 0,
+    };
     return (
         <>
             <Button
@@ -74,6 +78,7 @@ export default function UploadMatchDataForm({
             <DataTable
                 data={matchData}
                 columns={columns}
+                pagination={pagination}
             />
         </>
     );

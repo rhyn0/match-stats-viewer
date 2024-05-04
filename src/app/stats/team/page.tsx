@@ -6,6 +6,13 @@ import { BackButton } from "@/components/BackButton";
 import React from "react";
 import { DialogHeatmap } from "@/components/PopoutHeatmap";
 import { handleDivZero } from "@/lib/statsParse";
+import { type PaginationState } from "@tanstack/react-table";
+import { heatmapStrings } from "@/app/constants";
+
+interface TeamDataT extends DataT {
+    wins: number;
+    plays: number;
+}
 
 async function getTeamStats(): Promise<TeamStatRecord[]> {
     const response = await fetch("/api/stats/teams", {
@@ -29,6 +36,11 @@ export default function StatPage() {
     const [teamData, setTeamData] = React.useState<
         TeamStatRecord[] | undefined
     >(undefined);
+    const [tablePagination, setTablePagination] =
+        React.useState<PaginationState>({
+            pageIndex: 0,
+            pageSize: 10,
+        });
 
     React.useEffect(() => {
         getTeamStats().then((data) => setTeamData(data));
@@ -45,9 +57,12 @@ export default function StatPage() {
                     <h1 className="text-3xl">Team Stats</h1>
                     <DialogHeatmap
                         data={formatTeamDataForMap(teamData)}
-                        title="Team Map Win Rate"
-                        description="Heatmap of win rate percentages per map by team"
+                        {...heatmapStrings.team}
                         minMax={[0, 1]}
+                        extraLabels={[
+                            { name: "Wins", key: "wins" },
+                            { name: "Times Played", key: "plays" },
+                        ]}
                     />
                 </div>
                 <DataTable
@@ -57,13 +72,15 @@ export default function StatPage() {
                         left: ["defaultName", "teamName"],
                     }}
                     pageSizeChangingEnabled={false}
+                    pagination={tablePagination}
+                    onPaginationChange={setTablePagination}
                 />
             </div>
         </main>
     );
 }
 
-function formatTeamDataForMap(data: TeamStatRecord[] | undefined): DataT[] {
+function formatTeamDataForMap(data: TeamStatRecord[] | undefined): TeamDataT[] {
     if (!data) return [];
 
     const result = data.flatMap((team) =>

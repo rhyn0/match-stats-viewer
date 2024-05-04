@@ -1,17 +1,24 @@
-import { InteractionData } from "@/types";
+import { DataT, ExtraLabels, InteractionData } from "@/types";
 
-interface TooltipProps {
-    interactionData: InteractionData | undefined;
+interface TooltipProps<TData extends DataT> {
+    interactionData: InteractionData<TData> | undefined;
     width: number;
     height: number;
+    extraLabels?: ExtraLabels<TData>[];
 }
 
-export const Tooltip = ({ interactionData, width, height }: TooltipProps) => {
+export const Tooltip = <TData extends DataT>({
+    interactionData,
+    width,
+    height,
+    extraLabels = [],
+}: TooltipProps<TData>) => {
     if (!interactionData) {
         return null;
     }
 
     const { xPos, yPos, ...rest } = interactionData;
+    // The type of `rest` becomes TData here after removing the InteractionData keys
 
     return (
         <div
@@ -33,21 +40,21 @@ export const Tooltip = ({ interactionData, width, height }: TooltipProps) => {
                 }}
             >
                 <TooltipRow
-                    label="x"
+                    label="Column"
                     value={rest.colKey}
                 />
                 <TooltipRow
-                    label="y"
+                    label="Row"
                     value={rest.rowKey}
                 />
-                <TooltipRow
-                    label="Wins"
-                    value={rest.wins.toString()}
-                />
-                <TooltipRow
-                    label="Times Played"
-                    value={rest.plays.toString()}
-                />
+                {extraLabels.map(({ name, key }) => (
+                    <TooltipRow
+                        key={key.toString()}
+                        label={name}
+                        // @ts-expect-error - `rest` is indexable by any keyof TData
+                        value={rest[key].toString()}
+                    />
+                ))}
             </div>
         </div>
     );

@@ -5,17 +5,21 @@ import React from "react";
 import { Tooltip } from "./Tooltip";
 import { ColorLegend } from "./ColorLegend";
 import { DataT } from "@/types";
+import { ExtraLabels } from "@/types";
 
-export interface RangeHeatMapProps {
-    data: DataT[];
+export interface RangeHeatMapProps<TData extends DataT> {
+    data: TData[];
     height: number;
     width: number;
     title: string;
     description: string;
     margin?: { top: number; right: number; bottom: number; left: number };
     minMax?: [number, number];
+    extraLabels?: ExtraLabels<TData>[];
+    disableRowLabels: boolean;
+    disableColLabels: boolean;
 }
-export function RangeHeatMap({
+export function RangeHeatMap<TData extends DataT>({
     data,
     height,
     width,
@@ -23,11 +27,14 @@ export function RangeHeatMap({
     description,
     margin = { top: 80, right: 25, bottom: 80, left: 40 },
     minMax,
-}: RangeHeatMapProps) {
+    extraLabels,
+    disableColLabels,
+    disableRowLabels,
+}: RangeHeatMapProps<TData>) {
     const adjustedWidth = width - margin.left - margin.right;
     const adjustedHeight = height - margin.top - margin.bottom;
     const [interactionData, setInteractionData] = React.useState<
-        InteractionData | undefined
+        InteractionData<TData> | undefined
     >(undefined);
     const columnVars = React.useMemo(
         () => [...new Set(data.map((d) => d.colKey))],
@@ -104,14 +111,21 @@ export function RangeHeatMap({
                             setInteractionData,
                         )}
                     </g>
-                    <g>{buildXLabels(columnVars, xScale, adjustedHeight)}</g>
-                    <g>{buildYLabels(rowVars, yScale)}</g>
+                    {disableColLabels ? null : (
+                        <g>
+                            {buildXLabels(columnVars, xScale, adjustedHeight)}
+                        </g>
+                    )}
+                    {disableRowLabels ? null : (
+                        <g>{buildYLabels(rowVars, yScale)}</g>
+                    )}
                 </g>
             </svg>
             <Tooltip
                 interactionData={interactionData}
                 width={width}
                 height={height}
+                extraLabels={extraLabels}
             />
             <div className="flex w-full justify-center">
                 <ColorLegend
@@ -124,13 +138,13 @@ export function RangeHeatMap({
     );
 }
 
-function buildRects(
-    data: DataT[],
+function buildRects<TData extends DataT>(
+    data: TData[],
     xScale: d3.ScaleBand<string>,
     yScale: d3.ScaleBand<string>,
     colorScale: d3.ScaleSequential<string, never>,
     setInteractionData: React.Dispatch<
-        React.SetStateAction<InteractionData | undefined>
+        React.SetStateAction<InteractionData<TData> | undefined>
     >,
 ) {
     return data.map((d, idx) => {
