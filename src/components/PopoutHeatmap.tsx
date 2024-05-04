@@ -1,20 +1,26 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { RangeHeatMap } from "./graphs/RangeHeatmap";
-import { DataT } from "@/types";
+import { DataT, ExtraLabels } from "@/types";
 import { Button } from "./ui/button";
 
-export interface DialogHeatmapProps {
-    data: DataT[];
+export interface DialogHeatmapProps<TData extends DataT> {
+    data: TData[];
     title: string;
     description: string;
     minMax?: [number, number];
+    extraLabels?: ExtraLabels<TData>[];
+    disableRowLabels?: boolean;
+    disableColLabels?: boolean;
 }
-export function DialogHeatmap({
+export function DialogHeatmap<TData extends DataT>({
     data,
     title,
     description,
     minMax,
-}: DialogHeatmapProps) {
+    extraLabels,
+    disableColLabels = false,
+    disableRowLabels = false,
+}: DialogHeatmapProps<TData>) {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -29,6 +35,9 @@ export function DialogHeatmap({
                     height={600}
                     minMax={minMax}
                     margin={{ top: 80, right: 25, bottom: 60, left: 70 }}
+                    extraLabels={extraLabels}
+                    disableColLabels={disableColLabels}
+                    disableRowLabels={disableRowLabels}
                 />
             </DialogContent>
         </Dialog>

@@ -16,6 +16,8 @@ import {
     Table as TableT,
     PaginationState,
     Column,
+    TableState,
+    InitialTableState,
 } from "@tanstack/react-table";
 
 import {
@@ -69,6 +71,8 @@ interface DataTableProps<TData extends unknown, TValue> {
         right?: string[];
     };
     pageSizeChangingEnabled?: boolean;
+    pagination: PaginationState;
+    onPaginationChange?: React.Dispatch<React.SetStateAction<PaginationState>>;
     // onColumnFiltersChange?: React.Dispatch<
     //     React.SetStateAction<ColumnFiltersState>
     // >;
@@ -81,17 +85,29 @@ export function DataTable<TData extends unknown, TValue>({
     columnOrder,
     onColumnOrderChange,
     columnFilters,
+    pagination,
+    onPaginationChange,
     columnPinning = {},
     pageSizeChangingEnabled = true,
 }: DataTableProps<TData, TValue>) {
-    const [tablePagination, setTablePagination] =
-        React.useState<PaginationState>({
-            pageIndex: 0,
-            pageSize: 10,
-        });
     const [columnVisibility, setColumnVisibility] = React.useState<
         Record<string, boolean>
     >({});
+
+    const state: Partial<TableState> = {
+        columnVisibility,
+        columnOrder,
+    };
+    const initialState: InitialTableState = {
+        columnFilters,
+        columnPinning,
+    };
+    if (typeof onPaginationChange === "undefined") {
+        initialState.pagination = pagination;
+    } else {
+        state.pagination = pagination;
+    }
+
     const table = useReactTable({
         data,
         columns,
@@ -101,18 +117,10 @@ export function DataTable<TData extends unknown, TValue>({
         getFacetedRowModel: getFacetedRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),
         getPaginationRowModel: getPaginationRowModel(),
-        onPaginationChange: setTablePagination,
         onColumnVisibilityChange: setColumnVisibility,
-        state: {
-            columnVisibility,
-            columnOrder,
-            pagination: tablePagination,
-        },
+        state,
         onColumnOrderChange,
-        initialState: {
-            columnFilters, // will i be able to directly tie in a filter change here?
-            columnPinning,
-        },
+        initialState,
     });
     const checkboxVisibility = Object.fromEntries(
         table
@@ -229,7 +237,7 @@ function TablePaginationNav<TData>({
     table,
     enablePageSizeChange,
 }: TablePaginationNavProps<TData>) {
-    const pageSizeOptions = [10, 20, 50];
+    const pageSizeOptions = [5, 10, 20, 50];
     return (
         <div className="flex flex-col items-center justify-end space-x-2 py-4">
             <div className="flex flex-row">
