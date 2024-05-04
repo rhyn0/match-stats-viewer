@@ -217,7 +217,7 @@ function buildYLabels(yGroups: string[], yScale: d3.ScaleBand<string>) {
             >
                 {parts.map((substring, i) => (
                     <tspan
-                        key={`${name}-${substring}`}
+                        key={`${name}-${substring}-${i}`}
                         x={xPos}
                         y={yPos}
                         dy={`${i * lineHeight + dyAdjust}em`}

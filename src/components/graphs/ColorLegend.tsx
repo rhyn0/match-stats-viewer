@@ -26,7 +26,7 @@ export const ColorLegend = ({
 
     const allTicks = xScale.ticks(4).map((tick) => {
         return (
-            <>
+            <g key={`${xScale(tick)}-${tick}`}>
                 <line
                     x1={xScale(tick)}
                     x2={xScale(tick)}
@@ -44,7 +44,7 @@ export const ColorLegend = ({
                 >
                     {tick}
                 </text>
-            </>
+            </g>
         );
     });
 
