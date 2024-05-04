@@ -79,7 +79,6 @@ export default function UploadMatchDataForm({
                 data={matchData}
                 columns={columns}
                 pagination={pagination}
-                // onPaginationChange={() => console.log("hello")}
             />
         </>
     );
