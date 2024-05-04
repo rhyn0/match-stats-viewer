@@ -1,6 +1,3 @@
-// work on player stats first
-import { ColoredRatioNumber } from "@/components/coloredRatioNumber";
-import { handleDivZero } from "@/lib/statsParse";
 import { TeamStatRecord, mapNames } from "@/types";
 import { createColumnHelper } from "@tanstack/react-table";
 
@@ -87,36 +84,6 @@ export const columns = [
                             meta: {
                                 filterVariant: "range",
                             },
-                        },
-                    ),
-                    teamColumnHelper.accessor(
-                        (row) => {
-                            const wins = row.mapStats[mapName]?.won ?? 0;
-                            const plays = row.mapStats[mapName]?.played ?? 0;
-                            return plays === 0
-                                ? -1
-                                : handleDivZero({
-                                      wins,
-                                      plays,
-                                  });
-                        },
-                        {
-                            header: `${mapName} Win Ratio`,
-                            meta: {
-                                filterVariant: "range",
-                            },
-                            cell: ({ getValue }) => (
-                                <>
-                                    {getValue() === -1 ? (
-                                        "Never Played"
-                                    ) : (
-                                        <ColoredRatioNumber
-                                            value={getValue()}
-                                            breakpoint={0.5}
-                                        />
-                                    )}
-                                </>
-                            ),
                         },
                     ),
                 ],

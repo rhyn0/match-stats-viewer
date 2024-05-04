@@ -39,14 +39,12 @@ export async function GET(): Promise<NextResponse> {
             },
         },
     });
-    console.log(teamResult[8]);
     const finalStats: TeamStatRecord[] = teamResult.map((teamStat) => ({
         // @ts-expect-error - missing type hinting for relation query
         ...calculateTeamStats(teamStat),
         teamName: teamStat.teamName ?? "",
         defaultName: teamStat.defaultName,
     }));
-    console.table(finalStats);
     return new NextResponse(
         JSON.stringify({ rows: finalStats, length: finalStats.length }),
     );

@@ -118,3 +118,14 @@ export const TeamStatRecordZ = z.object({
     }),
     overtimes: z.number().finite(),
 }) satisfies z.ZodType<TeamStatRecord>;
+export interface InteractionData extends DataT {
+    xPos: number;
+    yPos: number;
+}
+export interface DataT {
+    rowKey: string;
+    colKey: string;
+    value: number;
+    wins: number;
+    plays: number;
+}

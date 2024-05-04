@@ -1,9 +1,11 @@
 "use client";
-import { TeamStatRecord, TeamStatRecordZ } from "@/types";
+import { DataT, TeamStatRecord, TeamStatRecordZ, mapNames } from "@/types";
 import { DataTable } from "@/components/dataTable";
 import { columns } from "./columns";
 import { BackButton } from "@/components/BackButton";
 import React from "react";
+import { DialogHeatmap } from "@/components/PopoutHeatmap";
+import { handleDivZero } from "@/lib/statsParse";
 
 async function getTeamStats(): Promise<TeamStatRecord[]> {
     const response = await fetch("/api/stats/teams", {
@@ -39,7 +41,15 @@ export default function StatPage() {
         <main>
             <BackButton />
             <div className="container">
-                <h1 className="text-3xl">Team Stats</h1>
+                <div className="flex justify-between">
+                    <h1 className="text-3xl">Team Stats</h1>
+                    <DialogHeatmap
+                        data={formatTeamDataForMap(teamData)}
+                        title="Team Map Win Rate"
+                        description="Heatmap of win rate percentages per map by team"
+                        minMax={[0, 1]}
+                    />
+                </div>
                 <DataTable
                     data={teamData}
                     columns={columns}
@@ -51,4 +61,30 @@ export default function StatPage() {
             </div>
         </main>
     );
+}
+
+function formatTeamDataForMap(data: TeamStatRecord[] | undefined): DataT[] {
+    if (!data) return [];
+
+    const result = data.flatMap((team) =>
+        mapNames.map((mapName) => {
+            const mapStats = team.mapStats[mapName] ?? { played: 0, won: 0 };
+            return {
+                rowKey: team.teamName ?? team.defaultName,
+                colKey: mapName,
+                value:
+                    mapStats.played === 0
+                        ? -1
+                        : parseFloat(
+                              handleDivZero({
+                                  wins: mapStats.won,
+                                  plays: mapStats.played,
+                              }).toFixed(3),
+                          ),
+                wins: mapStats.won,
+                plays: mapStats.played,
+            };
+        }),
+    );
+    return result;
 }
