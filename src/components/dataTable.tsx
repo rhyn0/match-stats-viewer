@@ -18,6 +18,7 @@ import {
     Column,
     TableState,
     InitialTableState,
+    TableOptions,
 } from "@tanstack/react-table";
 
 import {
@@ -102,13 +103,7 @@ export function DataTable<TData extends unknown, TValue>({
         columnFilters,
         columnPinning,
     };
-    if (typeof onPaginationChange === "undefined") {
-        initialState.pagination = pagination;
-    } else {
-        state.pagination = pagination;
-    }
-
-    const table = useReactTable({
+    const tableOptions: TableOptions<TData> = {
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
@@ -118,10 +113,16 @@ export function DataTable<TData extends unknown, TValue>({
         getFacetedUniqueValues: getFacetedUniqueValues(),
         getPaginationRowModel: getPaginationRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
-        state,
         onColumnOrderChange,
-        initialState,
-    });
+    };
+    if (typeof onPaginationChange === "undefined") {
+        initialState.pagination = pagination;
+    } else {
+        state.pagination = pagination;
+        tableOptions.onPaginationChange = onPaginationChange;
+    }
+
+    const table = useReactTable({ ...tableOptions, state, initialState });
     const checkboxVisibility = Object.fromEntries(
         table
             .getAllLeafColumns()
