@@ -1,38 +1,41 @@
 "use client";
-import { InteractionDataTODO } from "@/types";
+import { InteractionData } from "@/types";
 import * as d3 from "d3";
 import React from "react";
 import { Tooltip } from "./Tooltip";
+import { ColorLegend } from "./ColorLegend";
+import { DataT } from "@/types";
 
-type DataT = { value: number } & Record<string, string>;
-export interface RangeHeatMapProps<TData extends Record<string, string>> {
-    columnKey: keyof TData;
-    rowKey: keyof TData;
+export interface RangeHeatMapProps {
     data: DataT[];
     height: number;
     width: number;
+    title: string;
+    description: string;
     margin?: { top: number; right: number; bottom: number; left: number };
+    minMax?: [number, number];
 }
-export function RangeHeatMap<TData extends Record<string, string>>({
-    columnKey,
-    rowKey,
+export function RangeHeatMap({
     data,
     height,
     width,
-    margin = { top: 80, right: 25, bottom: 30, left: 40 },
-}: RangeHeatMapProps<TData>) {
+    title,
+    description,
+    margin = { top: 80, right: 25, bottom: 80, left: 40 },
+    minMax,
+}: RangeHeatMapProps) {
     const adjustedWidth = width - margin.left - margin.right;
-    const adjustedHeight = height - margin.top - margin.right;
+    const adjustedHeight = height - margin.top - margin.bottom;
     const [interactionData, setInteractionData] = React.useState<
-        InteractionDataTODO | undefined
+        InteractionData | undefined
     >(undefined);
     const columnVars = React.useMemo(
-        () => [...new Set(data.map((d) => d[columnKey]))],
-        [data, columnKey],
+        () => [...new Set(data.map((d) => d.colKey))],
+        [data],
     );
     const rowVars = React.useMemo(
-        () => [...new Set(data.map((d) => d[rowKey]))],
-        [data, rowKey],
+        () => [...new Set(data.map((d) => d.rowKey))],
+        [data],
     );
     const xScale = React.useMemo(
         () =>
@@ -53,21 +56,21 @@ export function RangeHeatMap<TData extends Record<string, string>>({
         [rowVars, adjustedHeight],
     );
 
-    const [min, max] = d3.extent(data.map((d) => d.value));
-    if (!min || !max) {
+    const [min, max] = !minMax ? d3.extent(data.map((d) => d.value)) : minMax;
+    if (typeof min === "undefined" || typeof max === "undefined") {
         console.error("No data values present");
         return null;
     }
     // Color scale
     const colorScale = d3
         .scaleSequential()
-        .interpolator(d3.interpolateInferno)
+        .interpolator(d3.interpolateRdYlGn)
         .domain([min, max]);
 
     return (
         <div className="relative">
             <svg
-                className="border-2 border-yellow-500 text-white"
+                className=" text-white"
                 height={height}
                 width={width}
             >
@@ -76,17 +79,33 @@ export function RangeHeatMap<TData extends Record<string, string>>({
                     width={adjustedWidth}
                     transform={`translate(${[margin.left, margin.top].join(",")})`}
                 >
-                    {buildRects(
-                        data,
-                        columnKey,
-                        rowKey,
-                        xScale,
-                        yScale,
-                        colorScale,
-                        setInteractionData,
-                    )}
-                    {buildXLabels(columnVars, xScale, adjustedHeight)}
-                    {buildYLabels(rowVars, yScale)}
+                    <text
+                        x="0"
+                        y={-margin.top + 40}
+                        textAnchor="left"
+                        className="fill-black text-xl dark:fill-white"
+                    >
+                        {title}
+                    </text>
+                    <text
+                        x="0"
+                        y={-margin.top + 60}
+                        textAnchor="left"
+                        className="max-w-96 fill-gray-600 text-sm dark:fill-gray-300 "
+                    >
+                        {description}
+                    </text>
+                    <g>
+                        {buildRects(
+                            data,
+                            xScale,
+                            yScale,
+                            colorScale,
+                            setInteractionData,
+                        )}
+                    </g>
+                    <g>{buildXLabels(columnVars, xScale, adjustedHeight)}</g>
+                    <g>{buildYLabels(rowVars, yScale)}</g>
                 </g>
             </svg>
             <Tooltip
@@ -94,24 +113,29 @@ export function RangeHeatMap<TData extends Record<string, string>>({
                 width={width}
                 height={height}
             />
+            <div className="flex w-full justify-center">
+                <ColorLegend
+                    width={adjustedWidth - 200}
+                    height={100}
+                    colorScale={colorScale}
+                />
+            </div>
         </div>
     );
 }
 
 function buildRects(
     data: DataT[],
-    columnKey: string,
-    rowKey: string,
     xScale: d3.ScaleBand<string>,
     yScale: d3.ScaleBand<string>,
     colorScale: d3.ScaleSequential<string, never>,
     setInteractionData: React.Dispatch<
-        React.SetStateAction<InteractionDataTODO | undefined>
+        React.SetStateAction<InteractionData | undefined>
     >,
 ) {
     return data.map((d, idx) => {
-        const xPos = xScale(d[columnKey]);
-        const yPos = yScale(d[rowKey]);
+        const xPos = xScale(d.colKey) as number;
+        const yPos = yScale(d.rowKey) as number;
         return (
             <rect
                 key={idx}
@@ -150,7 +174,7 @@ function buildXLabels(
             textAnchor="middle"
             dominantBaseline="middle"
             fontSize="10"
-            className="fill-black dark:fill-slate-300"
+            className="w- text-wrap fill-black dark:fill-slate-300"
         >
             {name}
         </text>
@@ -158,17 +182,40 @@ function buildXLabels(
 }
 
 function buildYLabels(yGroups: string[], yScale: d3.ScaleBand<string>) {
-    return yGroups.map((name, idx) => (
-        <text
-            key={idx}
-            x={-5}
-            y={(yScale(name) ?? 0) + yScale.bandwidth() / 2}
-            textAnchor="end"
-            dominantBaseline="middle"
-            fontSize="10"
-            className="fill-black dark:fill-slate-300"
-        >
-            {name}
-        </text>
-    ));
+    const lineHeight = 1; //em
+    const dyAdjust = 0.01;
+    return yGroups.map((name, idx) => {
+        const parts = name.split(/\s+/);
+        const xPos = -5;
+        let yPos = (yScale(name) ?? 0) + yScale.bandwidth() / 2;
+        if (parts.length > 2) {
+            yPos -= 10;
+        }
+        return (
+            <text
+                key={idx}
+                x={xPos}
+                y={yPos}
+                textAnchor="end"
+                dominantBaseline="middle"
+                fontSize="10"
+                className="fill-black dark:fill-slate-300"
+            >
+                {parts.map((substring, i) => (
+                    <tspan
+                        key={`${name}-${substring}`}
+                        x={xPos}
+                        y={yPos}
+                        dy={`${i * lineHeight + dyAdjust}em`}
+                        style={{
+                            fontSize: parts.length < 4 ? 12 : 9,
+                        }}
+                    >
+                        {substring}
+                    </tspan>
+                ))}
+                {/* {name} */}
+            </text>
+        );
+    });
 }
