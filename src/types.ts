@@ -132,3 +132,27 @@ export interface ExtraLabels<TKey> {
     key: keyof TKey;
     name: string;
 }
+export interface TeamIdentifiers {
+    teamId: number;
+    teamName: string;
+}
+
+export interface TeamHeadToHead {
+    winnerId: number;
+    winnerName: string;
+    roundDiff: number;
+}
+
+export interface PlayoffChecklistStep {
+    name: string;
+    description: string;
+}
+
+export interface TeamH2HOverall {
+    teamId: number;
+    roundDiff: number;
+    mapDiff: number;
+}
+export const Head2HeadCheckboxRoles = ["left", "tied", "right"] as const;
+export type Head2HeadCheckboxRolesT = (typeof Head2HeadCheckboxRoles)[number];
+export type Head2HeadChecklistResult = Head2HeadCheckboxRolesT | false;

@@ -2,7 +2,6 @@
 import { DataT, TeamStatRecord, TeamStatRecordZ, mapNames } from "@/types";
 import { DataTable } from "@/components/dataTable";
 import { columns } from "./columns";
-import { BackButton } from "@/components/BackButton";
 import React from "react";
 import { DialogHeatmap } from "@/components/PopoutHeatmap";
 import { handleDivZero } from "@/lib/statsParse";
@@ -50,8 +49,7 @@ export default function StatPage() {
         return <div> Loading...</div>;
     }
     return (
-        <main>
-            <BackButton />
+        <div>
             <div className="container">
                 <div className="flex justify-between">
                     <h1 className="text-3xl">Team Stats</h1>
@@ -76,7 +74,7 @@ export default function StatPage() {
                     onPaginationChange={setTablePagination}
                 />
             </div>
-        </main>
+        </div>
     );
 }
 
