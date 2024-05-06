@@ -25,15 +25,11 @@ export function PlayoffChecklistPanel({ teamIds }: PlayoffChecklistPanelProps) {
         [],
     );
     function onSubmit(values: HeadToHead2WayForm): void {
-        getTeamHeadToHead(values).then((resp) => {
-            setTeamH2H(resp);
-            setTeamNames([
-                teamIds.find(({ teamId }) => resp[0]?.winnerId === teamId)
-                    ?.teamName,
-                teamIds.find(({ teamId }) => resp[1]?.winnerId === teamId)
-                    ?.teamName,
-            ]);
-        });
+        getTeamHeadToHead(values).then((resp) => setTeamH2H(resp));
+        setTeamNames([
+            teamIds.find(({ teamId }) => values.teamAId === teamId)?.teamName,
+            teamIds.find(({ teamId }) => values.teamBId === teamId)?.teamName,
+        ]);
         // happy path stuff
         Promise.all([
             getTeamOverall(values.teamAId),
