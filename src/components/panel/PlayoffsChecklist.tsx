@@ -33,8 +33,8 @@ export function PlayoffChecklistPanel({ teamIds }: PlayoffChecklistPanelProps) {
                     ?.teamName,
             },
             {
-                id: values.teamAId,
-                name: teamIds.find(({ teamId }) => values.teamAId === teamId)
+                id: values.teamBId,
+                name: teamIds.find(({ teamId }) => values.teamBId === teamId)
                     ?.teamName,
             },
         ]);
