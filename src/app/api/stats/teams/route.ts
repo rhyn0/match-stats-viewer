@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import db from "@/lib/drizzleLibSQL";
 import { TeamStatRecord, mapStats } from "@/types";
 
+export const revalidate = 1800;
+
 export async function GET(): Promise<NextResponse> {
     const teamResult = await db.query.teams.findMany({
         columns: {

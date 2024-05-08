@@ -21,14 +21,22 @@ export function PlayoffChecklistPanel({ teamIds }: PlayoffChecklistPanelProps) {
     const [teamOverallStats, setTeamOverallStats] = React.useState<
         TeamH2HOverall[]
     >([]);
-    const [teamNames, setTeamNames] = React.useState<(string | undefined)[]>(
-        [],
-    );
+    const [teamNames, setTeamNames] = React.useState<
+        { name: string | undefined; id: number }[]
+    >([]);
     function onSubmit(values: HeadToHead2WayForm): void {
         getTeamHeadToHead(values).then((resp) => setTeamH2H(resp));
         setTeamNames([
-            teamIds.find(({ teamId }) => values.teamAId === teamId)?.teamName,
-            teamIds.find(({ teamId }) => values.teamBId === teamId)?.teamName,
+            {
+                id: values.teamAId,
+                name: teamIds.find(({ teamId }) => values.teamAId === teamId)
+                    ?.teamName,
+            },
+            {
+                id: values.teamAId,
+                name: teamIds.find(({ teamId }) => values.teamAId === teamId)
+                    ?.teamName,
+            },
         ]);
         // happy path stuff
         Promise.all([
@@ -43,11 +51,11 @@ export function PlayoffChecklistPanel({ teamIds }: PlayoffChecklistPanelProps) {
                 Playoffs Two-Way Head-to-Head Checker
             </h1>
             <PlayoffsCheckbox
-                leftTeamName={teamNames[0]}
-                rightTeamName={teamNames[1]}
+                leftTeamName={teamNames[0]?.name}
+                rightTeamName={teamNames[1]?.name}
                 steps={twoWaySteps}
                 checkedSteps={calculateTwoWayCheckedSteps(
-                    teamIds[0].teamId,
+                    teamNames[0]?.id,
                     teamH2H,
                     teamOverallStats,
                 )}
