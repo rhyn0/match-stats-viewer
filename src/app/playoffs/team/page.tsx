@@ -1,7 +1,7 @@
 "use client";
 import { TeamStatRecord, TeamStatRecordZ } from "@/types";
 import { DataTable } from "@/components/dataTable";
-import { columns } from "./columns";
+import { columns } from "@/app/stats/team/columns";
 import React from "react";
 import { DialogHeatmap } from "@/components/PopoutHeatmap";
 import { type PaginationState } from "@tanstack/react-table";
@@ -9,7 +9,7 @@ import { heatmapStrings } from "@/app/constants";
 import { formatTeamDataForMap } from "@/lib/team-calculation";
 
 async function getTeamStats(): Promise<TeamStatRecord[]> {
-    const response = await fetch("/api/stats/teams", {
+    const response = await fetch("/api/stats/teams/playoffs", {
         next: { tags: ["stats", "teams"], revalidate: 60 },
     });
     if (!response.ok) {

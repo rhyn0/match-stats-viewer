@@ -1,10 +1,28 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/drizzleLibSQL";
-import { calculateStats } from "@/lib/player-calculation";
-import { calculateAgentsPlayed } from "@/lib/player-calculation";
+import {
+    calculateAgentsPlayed,
+    calculateStats,
+} from "@/lib/player-calculation";
+import { eq } from "drizzle-orm";
+import { matches } from "@db/schema/match";
 
 export const revalidate = 1800;
 
+interface PlayerMatchRel {
+    id: number;
+    matchId: number;
+    playerAgentId: number;
+    matchPlace: number;
+    playerKills: number;
+    playerDeaths: number;
+    playerAssists: number;
+    matchRel: {
+        roundCountA: number;
+        roundCountB: number;
+        isPlayoffs: boolean;
+    };
+}
 export async function GET(): Promise<NextResponse> {
     const playerResult = await db.query.players.findMany({
         columns: {
@@ -23,13 +41,13 @@ export async function GET(): Promise<NextResponse> {
                     playerDeaths: true,
                     playerAssists: true,
                 },
-                // limit: 1  // limit the relation return if wanted
                 with: {
                     matchRel: {
                         columns: {
                             roundCountA: true,
                             roundCountB: true,
                         },
+                        where: eq(matches.isPlayoffs, true),
                     },
                     agentPlayedByPlayerRel: true,
                 },
@@ -37,9 +55,23 @@ export async function GET(): Promise<NextResponse> {
             teamInfoRel: true,
         },
     });
-    const finalStats = playerResult.map((playerStats) => ({
-        // @ts-expect-error - cant hint the sub relation
-        ...calculateStats(playerStats),
+    const playersInPlayoffs = playerResult
+        .map((player) => ({
+            ...player,
+            // prettier-ignore
+            playerMatchesRel: // @ts-expect-error - can't hint the depth of type
+            (player.playerMatchesRel as PlayerMatchRel[]).filter(
+                // since we `WHERE is_playoffs = true` this can be null if no match
+                // we want to eliminate matches that aren't playoffs
+                (playerMatch) => Boolean(playerMatch.matchRel),
+            ),
+        }))
+        .filter((player) => player.playerMatchesRel.length > 0);
+    const finalStats = playersInPlayoffs.map((playerStats) => ({
+        ...calculateStats(
+            // @ts-expect-error - playerStats can't be hinted to proper depth
+            playerStats,
+        ),
         id: playerStats.id,
         teamName:
             // @ts-expect-error - fails to load the relationship
@@ -48,8 +80,10 @@ export async function GET(): Promise<NextResponse> {
             playerStats.teamInfoRel?.defaultName ??
             "Sub",
         playerName: playerStats.name,
-        // @ts-expect-error - cant hint the sub relation
-        agentMap: calculateAgentsPlayed(playerStats.playerMatchesRel),
+        agentMap: calculateAgentsPlayed(
+            // @ts-expect-error - cant hint the sub relation
+            playerStats.playerMatchesRel,
+        ),
     }));
 
     return new NextResponse(

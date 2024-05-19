@@ -1,0 +1,1 @@
+ALTER TABLE matches_played ADD `is_playoffs` integer DEFAULT false NOT NULL;

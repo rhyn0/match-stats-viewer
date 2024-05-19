@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import db from "@/lib/drizzleLibSQL";
 import { TeamStatRecord } from "@/types";
 import { calculateTeamStats } from "@/lib/team-calculation";
+import { eq } from "drizzle-orm";
+import { matches } from "@db/schema/match";
 
 export const revalidate = 1800;
 
@@ -17,6 +19,7 @@ export async function GET(): Promise<NextResponse> {
                     teamAName: true,
                     roundCountA: true,
                     roundCountB: true,
+                    isPlayoffs: true,
                 },
                 with: {
                     mapForMatchRel: {
@@ -25,12 +28,14 @@ export async function GET(): Promise<NextResponse> {
                         },
                     },
                 },
+                where: eq(matches.isPlayoffs, true),
             },
             matchesForTeamBRel: {
                 columns: {
                     teamBName: true,
                     roundCountA: true,
                     roundCountB: true,
+                    isPlayoffs: true,
                 },
                 with: {
                     mapForMatchRel: {
@@ -39,10 +44,18 @@ export async function GET(): Promise<NextResponse> {
                         },
                     },
                 },
+                where: eq(matches.isPlayoffs, true),
             },
         },
     });
-    const finalStats: TeamStatRecord[] = teamResult.map((teamStat) => ({
+    const playoffsTeamResult = teamResult.filter(
+        (team) =>
+            // @ts-expect-error - cant type hint the depth of the relation
+            team.matchesForTeamARel.length > 0 ||
+            // @ts-expect-error - cant type hint the depth of the relation
+            team.matchesForTeamBRel.length > 0,
+    );
+    const finalStats: TeamStatRecord[] = playoffsTeamResult.map((teamStat) => ({
         // @ts-expect-error - missing type hinting for relation query
         ...calculateTeamStats(teamStat),
         teamName: teamStat.teamName ?? "",

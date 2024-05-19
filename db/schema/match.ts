@@ -26,6 +26,9 @@ export const matches = sqliteTable("matches_played", {
     mapPlayedId: integer("map_id")
         .references(() => maps.id)
         .notNull(),
+    isPlayoffs: integer("is_playoffs", { mode: "boolean" })
+        .notNull()
+        .default(false),
 });
 
 export const playerDetailsRel = relations(matches, ({ many }) => ({
