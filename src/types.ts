@@ -194,3 +194,28 @@ export interface CalculatedKdStats {
 }
 export type agentNameEnumT = (typeof agentNameEnum)[number];
 export type AgentMapType = Partial<Record<agentNameEnumT, number>>;
+export interface TeamRow {
+    defaultName: string;
+    teamName: string;
+    matchesForTeamARel: MatchStatsA[];
+    matchesForTeamBRel: MatchStatsB[];
+}
+interface MapNameRelation {
+    mapForMatchRel: {
+        name: string;
+    };
+}
+interface RoundsPlayedForMap extends MapNameRelation {
+    roundCountA: number;
+    roundCountB: number;
+}
+interface MatchStatsA extends RoundsPlayedForMap {
+    teamAName: string;
+}
+interface MatchStatsB extends RoundsPlayedForMap {
+    teamBName: string;
+}
+export interface TeamDataT extends DataT {
+    wins: number;
+    plays: number;
+}

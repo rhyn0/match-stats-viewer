@@ -50,6 +50,12 @@ const navComponents = {
                 description:
                     "Table view of player statistics across playoffs. Displaying KDA statistics as well as preferred Agents to play.",
             },
+            {
+                title: "Team Statistics in Playoffs",
+                href: "/playoffs/team",
+                description:
+                    "Table view of team statistics across the regular season. Displaying per map win rates and overall round count trends.",
+            },
         ],
     },
 };
