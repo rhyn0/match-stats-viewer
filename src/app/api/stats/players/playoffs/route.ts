@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/drizzleLibSQL";
-import { calculateStats } from "@/lib/player-calculation";
-import { calculateAgentsPlayed } from "@/lib/player-calculation";
+import { eq } from "drizzle-orm";
+import { matches } from "@db/schema/match";
 
 export const revalidate = 1800;
 
@@ -30,6 +30,7 @@ export async function GET(): Promise<NextResponse> {
                             roundCountA: true,
                             roundCountB: true,
                         },
+                        where: eq(matches.isPlayoffs, true),
                     },
                     agentPlayedByPlayerRel: true,
                 },

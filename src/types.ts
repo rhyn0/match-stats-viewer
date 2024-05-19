@@ -1,4 +1,4 @@
-import { agentNameEnum } from "@db/schema/agent";
+import { agentNameEnum, agentTypeEnum } from "@db/schema/agent";
 import { z } from "zod";
 export interface OverallPlayerStatRecord {
     // fields from request directly
@@ -156,3 +156,41 @@ export interface TeamH2HOverall {
 export const Head2HeadCheckboxRoles = ["left", "tied", "right"] as const;
 export type Head2HeadCheckboxRolesT = (typeof Head2HeadCheckboxRoles)[number];
 export type Head2HeadChecklistResult = Head2HeadCheckboxRolesT | false;
+export interface PlayerMatchStatRecord {
+    id: number;
+    matchId: number | null;
+    playerAgentId: number | null;
+    matchPlace: number;
+    playerKills: number;
+    playerDeaths: number;
+    playerAssists: number;
+    matchRel: {
+        roundCountA: number;
+        roundCountB: number;
+    };
+    agentPlayedByPlayerRel: {
+        id: number;
+        name: (typeof agentNameEnum)[number];
+        agentType: (typeof agentTypeEnum)[number];
+    };
+}
+export interface PlayerRow {
+    id: number;
+    name: string;
+    teamId: number | null;
+    playerMatchesRel: PlayerMatchStatRecord[];
+}
+export interface CalculatedKdStats {
+    gamesPlayed: number;
+    kdRatio: {
+        overall: number;
+        min: number;
+        max: number;
+    };
+    roundsPlayed: number;
+    totalKills: number;
+    totalDeaths: number;
+    totalAssists: number;
+}
+export type agentNameEnumT = (typeof agentNameEnum)[number];
+export type AgentMapType = Partial<Record<agentNameEnumT, number>>;
