@@ -19,6 +19,7 @@ export async function GET(): Promise<NextResponse> {
                     teamAName: true,
                     roundCountA: true,
                     roundCountB: true,
+                    isPlayoffs: true,
                 },
                 with: {
                     mapForMatchRel: {
@@ -34,6 +35,7 @@ export async function GET(): Promise<NextResponse> {
                     teamBName: true,
                     roundCountA: true,
                     roundCountB: true,
+                    isPlayoffs: true,
                 },
                 with: {
                     mapForMatchRel: {
