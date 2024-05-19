@@ -19,19 +19,19 @@ import { ScrollArea } from "./ui/scroll-area";
 
 const navComponents = {
     regularSeason: {
-        triggerTitle: "Regular Season",
+        triggerTitle: "Overall Statistics",
         links: [
             {
                 title: "Player Statistics",
                 href: "/stats/player",
                 description:
-                    "Table view of player statistics across the regular season. Displaying KDA statistics as well as preferred Agents to play.",
+                    "Table view of player statistics across the tournament. Displaying KDA statistics as well as preferred Agents to play.",
             },
             {
                 title: "Team Statistics",
                 href: "/stats/team",
                 description:
-                    "Table view of team statistics across the regular season. Displaying per map win rates and overall round count trends.",
+                    "Table view of team statistics across the tournament. Displaying per map win rates and overall round count trends.",
             },
         ],
     },
@@ -54,7 +54,7 @@ const navComponents = {
                 title: "Team Statistics in Playoffs",
                 href: "/playoffs/team",
                 description:
-                    "Table view of team statistics across the regular season. Displaying per map win rates and overall round count trends.",
+                    "Table view of team statistics across playoffs. Displaying per map win rates and overall round count trends.",
             },
         ],
     },
