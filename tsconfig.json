@@ -24,12 +24,10 @@
         }
     },
     "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx",
-        ".next/types/**/*.ts",
-        "svgr.d.ts",
-        "scripts/migrate.js"
+        "src/**/*",
+        "db/**/*",
+        "types/**/*.d.ts",
+        ".next/types/**/*.ts"
     ],
     "exclude": ["node_modules"],
     // extra checking config
