@@ -69,6 +69,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
                             roundCountB: match.matchRecord.roundCount.roundsB,
                             // since this is from a JSON parse, Date object is not preserved
                             playDate: new Date(match.matchRecord.date),
+                            isPlayoffs: match.isPlayoffs,
                         })
                         .returning({ matchId: schema.matches.id });
                     matchId = result[0].matchId;

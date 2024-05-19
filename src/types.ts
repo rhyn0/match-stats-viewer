@@ -46,6 +46,7 @@ export type FilterVariantType = "text" | "range" | "select";
 
 export interface UploadMatchData {
     matchRecord: MatchRecord;
+    isPlayoffs: boolean;
     playerNames: string[];
     playerMatchRecords: PlayerMatchRecord[];
 }
